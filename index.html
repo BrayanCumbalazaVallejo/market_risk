@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto Final - Gestión del Riesgo de Mercado</title>
+  <!-- Enlace CSS de Estilos Premium -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Carga de FontAwesome para Iconos Elegantes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Carga de Chart.js desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Carga de MathJax para renderizado matemático formal -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+  <!-- Header / Barra de Navegación -->
+  <header>
+    <div class="brand-section">
+      <div class="brand-logo">R</div>
+      <div>
+        <span class="brand-name">Riesgo de Mercado</span>
+        <span class="brand-badge">Proyecto Final</span>
+      </div>
+    </div>
+    
+    <!-- Pestañas Interactivas de Navegación -->
+    <nav class="tabs-navigation">
+      <button class="tab-btn active" data-tab="inicio">
+        <i class="fa-solid fa-house"></i> Inicio
+      </button>
+      <button class="tab-btn" data-tab="egarch">
+        <i class="fa-solid fa-bezier-curve"></i> Análisis EGARCH
+      </button>
+      <button class="tab-btn" data-tab="ewma">
+        <i class="fa-solid fa-shield-halved"></i> Contagio y EWMA
+      </button>
+      <button class="tab-btn" data-tab="overview">
+        <i class="fa-solid fa-chart-line"></i> Resumen
+      </button>
+      <button class="tab-btn" data-tab="backtest">
+        <i class="fa-solid fa-list-check"></i> Backtesting
+      </button>
+    </nav>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main>
+  
+    <!-- PESTAÑA 0: INICIO Y METODOLOGÍA -->
+    <section id="inicio" class="tab-panel active">
+      
+      <!-- Welcome Hero Section -->
+      <div class="hero-section">
+        <h1 class="hero-title">Proyecto Final de Gestión del Riesgo de Mercado</h1>
+        <p class="hero-subtitle">Modelación de Volatilidad, Medición de Riesgo de Cola y Backtesting en el NASDAQ</p>
+      </div>
+
+      <!-- Banner de Contexto de Estudio Estático -->
+      <div style="margin-top: 1.5rem; background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.3); border-radius: 8px; padding: 0.85rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;">
+        <i class="fa-solid fa-circle-info" style="color: #a5b4fc; font-size: 1.25rem; flex-shrink: 0;"></i>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0; line-height: 1.45;">
+          <strong>Nota de Validación Académica:</strong> Esta pestaña de <em>Inicio</em> y las <em>Conclusiones</em> académicas presentadas son estáticas y corresponden al estudio de referencia original finalizado el <strong>11 de junio de 2026</strong> para el portafolio base (NVDA, GOOGL, MU, CEG). Si agrega nuevas series o modifica ponderaciones en el Gestor de Portafolio, el análisis cuantitativo completo, las métricas univariadas/multivariadas y el backtesting se recalcularán y reflejarán dinámicamente en las pestañas correspondientes.
+        </p>
+      </div>
+
+      <div class="welcome-grid" style="display: grid; grid-template-columns: 2.3fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+        
+        <!-- Columna Izquierda: Metodología, Formulación Matemática, Conclusiones -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Metodología -->
+          <div class="card">
+          <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <span>Metodología Cuantitativa Aplicada</span>
+            <button id="btn-open-math" class="math-btn" style="background-color: var(--color-brand); color: white; padding: 0.35rem 0.75rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; border: none; font-family: var(--font-family-title);">
+              <i class="fa-solid fa-calculator"></i> Ver Fundamentación Matemática
+            </button>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5;">
+            Este proyecto analiza la transmisión de volatilidad y el riesgo de pérdida conjunta en los activos clave del sector tecnológico y de infraestructura (NVIDIA, Alphabet, Constellation Energy y Micron Technology). Estudiamos cómo interactúan estos sectores usando un modelo estructurado en cinco etapas:
+          </p>
+          
+          <div class="methodology-steps">
+            <div class="method-step" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <div class="step-number" style="background-color: rgba(79, 70, 229, 0.1); border: 1px solid var(--color-brand); color: #fff; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</div>
+              <div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.15rem; color: var(--text-primary);">Carga de Datos e Imputación LOCF</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary);">Alineamos las series de cotización con el calendario bursátil de referencia (NASDAQ). Los días no laborables y festivos se imputan mediante el método de arrastre <strong>LOCF</strong> (Last Observation Carried Forward) para evitar el sesgo de anticipación o look-ahead bias.</p>
+              </div>
+            </div>
+            
+            <div class="method-step" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <div class="step-number" style="background-color: rgba(139, 92, 246, 0.1); border: 1px solid var(--color-accent); color: #fff; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</div>
+              <div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.15rem; color: var(--text-primary);">Diagnóstico de Series y Estacionariedad</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary);">Calculamos los retornos logarítmicos continuos y validamos su estacionariedad $I(0)$ con la prueba <strong>ADF</strong> (Dickey-Fuller Aumentada). Cuantificamos la curtosis y no-normalidad extrema mediante la prueba de <strong>Jarque-Bera</strong>, y confirmamos la heterocedasticidad condicional (efectos ARCH) usando la prueba de <strong>Ljung-Box</strong>.</p>
+              </div>
+            </div>
+
+            <div class="method-step" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <div class="step-number" style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid var(--color-green); color: #fff; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</div>
+              <div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.15rem; color: var(--text-primary);">Modelo EGARCH(1,1)-t Univariado</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary);">Estimamos la volatilidad condicional univariada de cada acción. Usamos el modelo exponencial <strong>EGARCH</strong> con distribución t-Student para modelar la asimetría ante choques negativos (efecto apalancamiento $\gamma$) y capturar de forma robusta la probabilidad de retornos extremos en las colas.</p>
+              </div>
+            </div>
+
+            <div class="method-step" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <div class="step-number" style="background-color: rgba(245, 158, 11, 0.1); border: 1px solid var(--color-warning); color: #fff; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">4</div>
+              <div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.15rem; color: var(--text-primary);">Covarianza EWMA y Stress Testing por Contagio</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary);">Calculamos la matriz de covarianza condicional dynamic del portafolio mediante un modelo <strong>EWMA</strong> con factor óptimo $\lambda = 0.940$. Diseñamos un simulador interactivo de shocks de mercado que propaga el impacto de caídas extremas usando los betas condicionales EWMA: $\beta_{j, k^*} = \Sigma_{j, k^*} / \Sigma_{k^*, k^*}$.</p>
+              </div>
+            </div>
+
+            <div class="method-step" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <div class="step-number" style="background-color: rgba(6, 182, 212, 0.1); border: 1px solid #06b6d4; color: #fff; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">5</div>
+              <div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.15rem; color: var(--text-primary);">Descomposición Analítica del Riesgo</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary);">Cuantificamos diariamente el Valor en Riesgo (<strong>VaR</strong>) y el Valor en Riesgo Condicional (<strong>CVaR</strong>) de la cartera. Implementamos la descomposición de riesgo para calcular la contribución marginal de riesgo de cada activo al VaR general: $\%\text{Contribución}_i = w_i (\Sigma \mathbf{w})_i / \sigma_p^2$.</p>
+              </div>
+            </div>
+
+            <div class="method-step" style="display: flex; gap: 1rem;">
+              <div class="step-number" style="background-color: rgba(244, 63, 94, 0.1); border: 1px solid var(--color-red); color: #fff; width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">6</div>
+              <div>
+                <h4 style="font-size: 0.95rem; margin-bottom: 0.15rem; color: var(--text-primary);">Backtesting Multidimensional</h4>
+                <p style="font-size: 0.82rem; color: var(--text-secondary);">Evaluamos la precisión empírica del modelo en una ventana móvil de 250 días aplicando la prueba de proporción de fallas de <strong>Kupiec</strong> (cobertura incondicional), el test de <strong>Christoffersen</strong> (independencia temporal y cobertura condicional) y la prueba de magnitud del exceso de <strong>López</strong>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <!-- Nueva Card: Conclusiones del Trabajo Cuantificadas -->
+          <div class="card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.8)); border: 1px solid rgba(99, 102, 241, 0.25);">
+            <div class="card-title" style="color: #a5b4fc; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-graduation-cap" style="color: var(--color-accent);"></i> 
+              <span>Conclusiones Cuantitativas y Académicas (Enfoque Quant)</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.5; text-align: justify;">
+              El análisis empírico y la modelación de riesgos sobre la muestra del NASDAQ (2022-2026, $T=1,104$ observaciones) permite formular las siguientes conclusiones métricas fundamentales:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="border-left: 3px solid var(--color-red); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">1. No-Normalidad y Colas Pesadas</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  El rechazo contundente del test de Jarque-Bera (p-valor 0.000) y la leptocurtosis empírica confirman que la teoría Gaussiana subestima el riesgo.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-warning); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">2. Optimización t-Student</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  Calibrar el modelo con una distribución t-Student (grados de libertad ~5.81) incrementó la precisión de la pérdida estimada del VaR paramétrico en un +18.4%.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-red); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">3. Efecto Apalancamiento Sectorial</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  Se comprobó asimetría en NVDA (-0.057) y GOOGL (-0.042), demostrando que las caídas en el sector tecnológico y nube generan mayor volatilidad futura que las ganancias.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-green); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">4. Volatilidad Simétrica en Energía y Memoria</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  Los activos CEG y MU no presentaron coeficiente gamma significativo, evidenciando una reacción de volatilidad pura, independientemente de la dirección del mercado.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-brand); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">5. Persistencia del Riesgo</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  El coeficiente GARCH ($\beta > 0.98$) en todos los activos indica una memoria larga en el mercado; los shocks de volatilidad tardan semanas en disiparse.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-red); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">6. Falsa Diversificación de Capital</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  Aunque el portafolio está equi-ponderado (25% cada activo), la Contribución Marginal al Riesgo demuestra que Micron (MU) concentra casi el 60% del riesgo total de cola.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-green); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">7. Rol Estabilizador Energético</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  Constellation Energy (CEG) actúa como estabilizador del portafolio, aportando solo un ~18% al VaR total gracias a su baja covarianza condicional con el ecosistema de hardware.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-warning); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">8. Contagio Sistémico (Stress Testing)</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  La matriz dinámica EWMA ($\lambda = 0.940$) evidenció que un shock adverso del -10% en NVDA propaga un contagio de -5.4% en GOOGL y -4.1% en MU, elevando el VaR global casi al doble.
+                </span>
+              </div>
+              <div style="border-left: 3px solid var(--color-green); padding-left: 0.85rem;">
+                <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">9. Validación Exhaustiva (Backtesting)</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
+                  El modelo superó el test de Kupiec (frecuencia), Christoffersen (independencia de rachas) y López (magnitud), garantizando una calibración estricta al 5% de significancia sin agrupamiento temporal de pérdidas.
+                </span>
+              </div>
+            </div>
+          </div>
+          
+        </div><!-- Fin Columna Izquierda -->
+        
+        <!-- Columna Derecha: Creadores del Proyecto (Autores, Especificación y Gestor) -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- Autores del Proyecto -->
+          <div class="card" style="padding: 1.25rem;">
+            <div class="card-title" style="font-size: 1.05rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-users" style="color: var(--color-brand); font-size: 1.1rem;"></i>
+              <span>Autores del Proyecto</span>
+            </div>
+            <div class="authors-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              
+              <div class="author-item" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(30, 41, 59, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.65rem 0.75rem; border-radius: 8px; transition: var(--transition-fast);">
+                <div style="background: linear-gradient(135deg, #4f46e5, #8b5cf6); width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 10px rgba(79, 70, 229, 0.35);">BC</div>
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">Brayan Armando Cumbalaza Vallejo</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Estudiante & Líder del Proyecto</span>
+                </div>
+              </div>
+
+              <div class="author-item" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(30, 41, 59, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.65rem 0.75rem; border-radius: 8px; transition: var(--transition-fast);">
+                <div style="background: linear-gradient(135deg, #8b5cf6, #06b6d4); width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 10px rgba(139, 92, 246, 0.35);">ML</div>
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">Mateo López Blandón</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Estudiante</span>
+                </div>
+              </div>
+
+              <div class="author-item" style="display: flex; align-items: center; gap: 0.75rem; background: rgba(30, 41, 59, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.65rem 0.75rem; border-radius: 8px; transition: var(--transition-fast);">
+                <div style="background: linear-gradient(135deg, #f59e0b, #e11d48); width: 2.2rem; height: 2.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);">VG</div>
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">Vanessa Catalina González</span>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">Estudiante</span>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+
+          <!-- Código Abierto y Repositorio GitHub -->
+          <div class="card" style="padding: 1.25rem;">
+            <div class="card-title" style="font-size: 1.05rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-brands fa-github" style="color: var(--text-primary); font-size: 1.25rem;"></i>
+              <span>Repositorio del Proyecto</span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.85rem; line-height: 1.45; text-align: justify;">
+              Este proyecto es de código abierto. Puedes consultar el código completo, proponer mejoras, clonar el repositorio o extender el análisis econométrico y financiero en GitHub:
+            </p>
+            <a href="https://github.com/BrayanCumbalazaVallejo/market_risk" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: #1f2937; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: 6px; text-decoration: none; font-size: 0.82rem; font-family: var(--font-family-title); font-weight: 500; transition: var(--transition-fast); width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.25);">
+              <i class="fa-brands fa-github" style="font-size: 1.05rem;"></i> BrayanCumbalazaVallejo/market_risk
+            </a>
+          </div>
+
+          <!-- Especificación Técnica -->
+          <div class="card" style="padding: 1.25rem;">
+            <div class="card-title" style="font-size: 1.05rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-circle-info" style="color: var(--color-accent); font-size: 1.1rem;"></i>
+              <span>Especificación Técnica</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
+              <div><strong>Muestra:</strong> 01-Ene-2022 al 31-May-2026</div>
+              <div><strong>Observaciones:</strong> 1,104 días hábiles</div>
+              <div><strong>Activos:</strong> <span id="spec-assets-list">NVDA, GOOGL, CEG, MU</span></div>
+              <div><strong>Frecuencia:</strong> Diaria de precios de cierre</div>
+            </div>
+          </div>
+
+          <!-- Drag and Drop CSV Uploader -->
+          <div class="card" style="padding: 1.25rem;">
+            <div class="card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-folder-plus" style="color: var(--color-warning); font-size: 1.1rem;"></i>
+              <span>Gestor de Portafolio</span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.4; text-align: justify;">
+              Descarga los datos históricos diarios en formato <code>.csv</code> directamente desde <a href="https://es.investing.com/" target="_blank" style="color: var(--color-accent); font-weight: 500; text-decoration: underline;">Investing.com</a>. Sube el archivo crudo y el sistema se encargará de realizar el preprocesamiento automático y la modelación econométrica completa, siguiendo la metodología de las 5 fases del estudio.
+            </p>
+            
+            <!-- Drag & Drop Zone -->
+            <div id="csv-drag-drop-zone" style="border: 2px dashed var(--border-color); border-radius: 8px; padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: var(--transition-fast); background: rgba(255,255,255,0.01);">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--text-muted); margin-bottom: 0.5rem; display: block;"></i>
+              <span id="drag-drop-text" style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Sube datos históricos diarios de Investing.com (Acciones EE.UU. - NASDAQ/NYSE). El archivo debe contener exactamente las columnas: Fecha, Último, Apertura, Máximo, Mínimo, Vol., % var.</span>
+              <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+            </div>
+            
+            <!-- Lista de Activos del Portafolio con opción de Borrar -->
+            <div style="margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid var(--border-color);">
+              <h4 style="font-size: 0.82rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem;">
+                <i class="fa-solid fa-list-ul" style="color: var(--color-brand); font-size: 0.9rem;"></i> Activos en Portafolio:
+              </h4>
+              <div id="portfolio-assets-delete-list" style="display: flex; flex-direction: column; gap: 0.45rem;">
+                <!-- Rellenado dinámicamente por JS con botones de eliminación -->
+              </div>
+            </div>
+            
+            <!-- Modal/Dialog for Ticker Input -->
+            <div id="ticker-input-container" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <label for="new-asset-ticker" style="font-size: 0.78rem; color: var(--text-secondary);">Código del Activo (Ticker):</label>
+                <input type="text" id="new-asset-ticker" class="custom-input" placeholder="Ej. TSLA, MSFT" maxlength="5" style="width: 100%; background: rgba(15, 23, 42, 0.8); color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.35rem 0.6rem; border-radius: 4px; font-family: var(--font-family-title); font-size: 0.85rem; text-transform: uppercase;">
+              </div>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                <button id="btn-cancel-upload" style="flex: 1; padding: 0.4rem; font-size: 0.78rem; border-radius: 4px; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; font-family: var(--font-family-title);">Cancelar</button>
+                <button id="btn-submit-upload" style="flex: 2; padding: 0.4rem; font-size: 0.78rem; border-radius: 4px; border: none; background: var(--color-brand); color: white; cursor: pointer; font-family: var(--font-family-title); font-weight: 500;">Validar & Cargar</button>
+              </div>
+            </div>
+            
+            <!-- Upload Status Alerts -->
+            <div id="upload-status-alert" style="display: none; margin-top: 1rem; padding: 0.65rem; border-radius: 6px; font-size: 0.78rem; line-height: 1.4; border: 1px solid transparent;">
+              <!-- Dynamic alert content -->
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+
+
+      <!-- Guía del Contenido (Directorio de Navegación) -->
+      <div class="card" style="margin-top: 1.5rem; padding: 2rem;">
+        <div class="card-title" style="font-size: 1.25rem; margin-bottom: 1.5rem;">Directorio del Dashboard: ¿Qué encontrarás en cada pestaña?</div>
+        <div class="directory-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+          
+          <div class="directory-card" data-tab="overview" style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px;">
+            <div style="color: var(--color-brand); font-size: 1.8rem; margin-bottom: 0.85rem;"><i class="fa-solid fa-chart-line"></i></div>
+            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Resumen</h4>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Principales métricas de riesgo del portafolio (VaR y CVaR), pesos de inversión asignados a cada acción, y comparación de los retornos históricos frente a la volatilidad estimada.</p>
+          </div>
+
+          <div class="directory-card" data-tab="egarch" style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px;">
+            <div style="color: var(--color-accent); font-size: 1.8rem; margin-bottom: 0.85rem;"><i class="fa-solid fa-bezier-curve"></i></div>
+            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Análisis EGARCH</h4>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Análisis detallado de cada acción: volatilidad estimada, parámetros del modelo EGARCH, recomendaciones del consenso del mercado y simulaciones de precios futuros.</p>
+          </div>
+
+          <div class="directory-card" data-tab="ewma" style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px;">
+            <div style="color: var(--color-warning); font-size: 1.8rem; margin-bottom: 0.85rem;"><i class="fa-solid fa-shield-halved"></i></div>
+            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Contagio y EWMA</h4>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Evolución de las correlaciones de los activos en el tiempo y simulador interactivo para ver cómo cambia la volatilidad calculada al ajustar el factor Lambda (λ).</p>
+          </div>
+
+          <div class="directory-card" data-tab="backtest" style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 8px;">
+            <div style="color: var(--color-red); font-size: 1.8rem; margin-bottom: 0.85rem;"><i class="fa-solid fa-list-check"></i></div>
+            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary);">Backtesting</h4>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">Evaluación de precisión del modelo mediante la prueba de Kupiec. Muestra los días con pérdidas superiores a las estimadas y permite analizar qué pasó en el mercado esos días.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- PESTAÑA 1: ANÁLISIS EGARCH UNIVARIADO (TradingView / eToro Style Layout) -->
+    <section id="egarch" class="tab-panel">
+      <div class="tradingview-layout">
+        
+        <!-- Columna Izquierda: Gráficos de Gran Ancho (70%) -->
+        <div class="charts-column">
+          <!-- Gráfica de Precio y Volatilidad EGARCH -->
+          <div class="card">
+            <div class="card-title">
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <span id="asset-chart-title">Evolución de Precio y Volatilidad</span>
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">Precios históricos y volatilidad condicional estimada</span>
+              </div>
+              
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <span style="display: flex; align-items: center; gap: 0.35rem; margin-right: 0.5rem;">
+                  <span class="badge-kpi">KPI</span>
+                  <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KPI Volatilidad: Fluctuación diaria de los retornos históricos y estimación condicional por EGARCH.</span></span>
+                </span>
+                <!-- Selector de resolución de agrupación: día, semana, mes, trimestral -->
+                <div class="resolution-selector-container">
+                  <button class="res-btn active" data-chart="asset" data-res="daily">Día</button>
+                  <button class="res-btn" data-chart="asset" data-res="weekly">Semana</button>
+                  <button class="res-btn" data-chart="asset" data-res="monthly">Mes</button>
+                  <button class="res-btn" data-chart="asset" data-res="quarterly">Trimestral</button>
+                </div>
+                
+                <!-- Botones de rango temporal eToro Style -->
+                <div class="range-selector-container">
+                  <button class="time-range-btn active" data-chart="asset" data-range="all">MÁX</button>
+                  <button class="time-range-btn" data-chart="asset" data-range="1y">1A</button>
+                  <button class="time-range-btn" data-chart="asset" data-range="6m">6M</button>
+                  <button class="time-range-btn" data-chart="asset" data-range="3m">3M</button>
+                  <button class="time-range-btn" data-chart="asset" data-range="1m">1M</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-container" style="height: 350px;">
+              <canvas id="chart-asset-dynamics"></canvas>
+            </div>
+          </div>
+          
+          <!-- Gráfica de Proyección Predictiva y Bandas de Volatilidad Futura -->
+          <div class="card" style="margin-top: 1.5rem;">
+            <div class="card-title" style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span>Proyección de Precio y Rango Esperado</span>
+                  <span class="badge-kpi">KPI</span>
+                  <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KPI Proyección de Precios: Pronósticos de precios futuros basados en simulación de Monte Carlo con volatilidad EGARCH.</span></span>
+                </div>
+                <span id="projection-subtitle" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">Simulación Monte Carlo de Precios (N=10,000 iteraciones) bajo Varianza Condicional EGARCH-t</span>
+              </div>
+              <!-- Selector interactivo de Horizonte de Simulación -->
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <label for="simulation-horizon" style="font-size: 0.8rem; color: var(--text-secondary);">Tiempo Simulado:</label>
+                <select id="simulation-horizon" class="custom-select" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 4px; height: auto;">
+                  <option value="10">10 Días</option>
+                  <option value="20">20 Días</option>
+                  <option value="30" selected>30 Días (Estándar)</option>
+                  <option value="45">45 Días</option>
+                  <option value="60">60 Días</option>
+                  <option value="90">90 Días</option>
+                </select>
+              </div>
+            </div>
+            <!-- Leyenda explicativa Real vs Simulado -->
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.75rem; background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 0.4rem 0.6rem; border-radius: 6px; display: inline-flex; gap: 1rem; flex-wrap: wrap;">
+              <span><span style="color: var(--color-green); font-weight: bold;">● Real Histórico:</span> Precios históricos observados hasta el 31-May-2026.</span>
+              <span><span style="color: var(--color-brand); font-weight: bold;">● Simulado:</span> Simulaciones basadas en la volatilidad estimada a partir de la fecha de corte.</span>
+            </div>
+            <div class="chart-container" style="height: 320px;">
+              <canvas id="chart-price-projection"></canvas>
+            </div>
+          </div>
+          
+          <!-- Distribución de Retornos Logarítmicos del Activo -->
+          <div class="card" style="margin-top: 1.5rem;">
+            <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span>Distribución de Retornos del Activo y Exceso de Curtosis</span>
+                  <span class="badge-kri">KRI</span>
+                  <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI Distribución de Retornos: Densidad empírica frente a teóricas para evaluar riesgo de colas (leptocurtosis).</span></span>
+                </div>
+                <span style="font-size: 0.8rem; color: var(--text-secondary);">Validación de colas pesadas frente a la distribución Normal y t-Student del activo seleccionado</span>
+              </div>
+              <button id="btn-open-dist-info" class="math-btn" style="background-color: var(--color-brand); color: white; padding: 0.35rem 0.75rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; border: none; font-family: var(--font-family-title);">
+                <i class="fa-solid fa-circle-info"></i> Evidencia y Concepto
+              </button>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              <div class="chart-container" style="height: 280px;">
+                <canvas id="chart-asset-distribution"></canvas>
+              </div>
+              <div id="asset-distribution-stats" style="border-top: 1px solid var(--border-color); padding-top: 0.85rem; font-family: var(--font-family-title); font-size: 0.85rem; color: var(--text-primary); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <!-- Rellenado dinámicamente por JS -->
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Columna Derecha: Sidebar de Parámetros y Consenso (30%) -->
+        <div class="sidebar-column">
+          <!-- Tarjeta de Control y Parámetros EGARCH -->
+          <div class="card" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div class="card-title" style="margin-bottom: 0;">Selección de Activo</div>
+            <div class="asset-dropdown-container">
+              <label for="asset-selector" style="font-size: 0.8rem; color: var(--text-secondary);">Escoge una acción para ver su análisis:</label>
+              <select id="asset-selector" class="custom-select" style="margin-top: 0.25rem;">
+                <option value="NVDA">NVIDIA Corp (NVDA)</option>
+                <option value="GOOGL">Alphabet Inc (GOOGL)</option>
+                <option value="CEG">Constellation Energy (CEG)</option>
+                <option value="MU">Micron Technology Inc (MU)</option>
+              </select>
+            </div>
+            <div class="params-table-container">
+              <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem; text-transform: uppercase; color: var(--text-secondary);">Parámetros EGARCH(1,1)-t</h4>
+              <table class="params-table">
+                <thead>
+                  <tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                    <th>p-valor</th>
+                    <th>Sig.</th>
+                  </tr>
+                </thead>
+                <tbody id="egarch-params-body">
+                  <!-- Rellenado dinámicamente por JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Consenso de Analistas (12M) -->
+          <div class="card" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="card-title" style="margin-bottom: 0;">Consenso de Analistas (12M)</div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: center; margin: 0.25rem 0;">
+              <div style="width: 100px; height: 100px; position: relative;">
+                <canvas id="chart-analyst-consensus"></canvas>
+              </div>
+              <div class="weights-list" style="margin-top: 0; font-size: 0.78rem; flex: 1; gap: 0.5rem;">
+                <div class="weight-item" style="padding: 0.2rem 0.4rem;"><span class="weight-asset"><span class="dot-color" style="background-color: var(--color-green)"></span>Comprar</span><span class="weight-val">90.0%</span></div>
+                <div class="weight-item" style="padding: 0.2rem 0.4rem;"><span class="weight-asset"><span class="dot-color" style="background-color: var(--color-warning)"></span>Mantener</span><span class="weight-val">10.0%</span></div>
+                <div class="weight-item" style="padding: 0.2rem 0.4rem;"><span class="weight-asset"><span class="dot-color" style="background-color: var(--color-red)"></span>Vender</span><span class="weight-val">0.0%</span></div>
+              </div>
+            </div>
+            
+            <div style="text-align: center; background-color: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 0.4rem; border-radius: 8px; margin-bottom: 0.75rem;">
+              <span style="font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 0.1rem;">Opinión General</span>
+              <span style="font-weight: 700; color: var(--color-green); font-size: 0.9rem; letter-spacing: 0.5px;">COMPRA INMEDIATAMENTE</span>
+            </div>
+            
+            <!-- Cuadro de texto dinámico de consenso cuantificado -->
+            <div id="consenso-cuantificado" style="font-size: 0.78rem; color: var(--text-secondary); background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 0.75rem; border-radius: 8px; line-height: 1.4; margin-bottom: 0.25rem;">
+              <!-- Rellenado dinámicamente -->
+            </div>
+            
+            <div class="backtest-results-card" style="margin-top: 0; font-size: 0.8rem; gap: 0.5rem;">
+              <div class="backtest-row" style="padding-bottom: 0.35rem;">
+                <span class="backtest-label">
+                  Objetivo de Precio Medio
+                  <span class="badge-kpi" style="margin-left: 0.25rem;">KPI</span>
+                  <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KPI Objetivo de Precio Medio: Valor medio esperado para el precio de la acción a 30 días hábiles.</span></span>
+                </span>
+                <span class="backtest-value" id="target-medium-val" style="color: var(--color-green);">-- USD</span>
+              </div>
+              <div class="backtest-row" style="padding-bottom: 0.35rem;">
+                <span class="backtest-label">
+                  Estimación Alta
+                  <span class="badge-kpi" style="margin-left: 0.25rem;">KPI</span>
+                  <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KPI Estimación Alta: Precio máximo esperado en base a la volatilidad histórica y EGARCH (+1.96 Desv. Est.).</span></span>
+                </span>
+                <span class="backtest-value" id="target-high-val">-- USD</span>
+              </div>
+              <div class="backtest-row" style="padding-bottom: 0.35rem;">
+                <span class="backtest-label">
+                  Estimación Baja
+                  <span class="badge-kpi" style="margin-left: 0.25rem;">KPI</span>
+                  <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KPI Estimación Baja: Precio mínimo esperado en base a la volatilidad histórica y EGARCH (-1.96 Desv. Est.).</span></span>
+                </span>
+                <span class="backtest-value" id="target-low-val" style="color: var(--color-red);">-- USD</span>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- La tarjeta de distribución fue movida a la columna de gráficos -->
+    </section>
+
+    <!-- PESTAÑA 2: CONTAGIO SISTÉMICO Y EWMA DINÁMICO -->
+    <section id="ewma" class="tab-panel">
+      <div class="ewma-layout">
+        
+        <!-- Gráfico de Correlaciones Dinámicas -->
+        <div class="card">
+          <div class="card-title">
+            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+              <span>Correlación Dinámica EWMA</span>
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">Análisis de correlación y covarianza entre los activos a lo largo del tiempo</span>
+            </div>
+            <!-- Selectores para Activo A y Activo B -->
+            <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <label for="ewma-asset-a" style="font-size: 0.8rem; color: var(--text-secondary);">Activo A:</label>
+                <select id="ewma-asset-a" class="custom-select" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 4px; height: auto;">
+                  <option value="NVDA" selected>NVIDIA (NVDA)</option>
+                  <option value="GOOGL">Alphabet (GOOGL)</option>
+                  <option value="CEG">Constellation Energy (CEG)</option>
+                  <option value="MU">Micron (MU)</option>
+                </select>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <label for="ewma-asset-b" style="font-size: 0.8rem; color: var(--text-secondary);">Activo B:</label>
+                <select id="ewma-asset-b" class="custom-select" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 4px; height: auto;">
+                  <option value="NVDA">NVIDIA (NVDA)</option>
+                  <option value="GOOGL">Alphabet (GOOGL)</option>
+                  <option value="CEG" selected>Constellation Energy (CEG)</option>
+                  <option value="MU">Micron (MU)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 400px;">
+            <canvas id="chart-ewma-correlations"></canvas>
+          </div>
+        </div>
+        
+        <!-- Simulador interactivo de Lambda -->
+        <div class="card simulation-control-card">
+          <div class="card-title">Simulación en Tiempo Real (Lambda)</div>
+          <p class="control-description">
+            Ajusta el factor de decaimiento <strong>Lambda (λ)</strong> para ver cómo cambia la correlación.
+            Un factor menor reacciona más rápido a los cambios recientes del mercado, mientras que un factor mayor suaviza la serie dando más peso al comportamiento histórico.
+          </p>
+          
+          <div class="slider-container">
+            <div class="slider-header">
+              <span class="slider-label">Factor Lambda (λ)</span>
+              <span class="slider-value" id="lambda-value">0.940</span>
+            </div>
+            <input type="range" id="lambda-slider" class="custom-range" min="0.80" max="0.99" step="0.005" value="0.94">
+          </div>
+          
+          <button id="btn-reset-lambda" class="btn-reset-simulation">
+            <i class="fa-solid fa-rotate-left"></i> Restablecer a λ Óptimo (0.94)
+          </button>
+          
+          <div class="backtest-results-card" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <h4 style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase;">Diagnóstico de la Simulación</h4>
+            <div class="backtest-row">
+              <span class="backtest-label">Persistencia de Shocks</span>
+              <span class="backtest-value" id="sim-persistence" style="color: var(--color-warning);">Alta (Memoria larga)</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">Reactividad de Volatilidad</span>
+              <span class="backtest-value" id="sim-reactivity">Estable</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">Estado de Correlación</span>
+              <span class="backtest-value" id="sim-correlation-state" style="font-weight: bold;">--</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- Módulo de Stress Testing (Simulación de Shocks de Mercado) -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-title">
+          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <span>Módulo de Stress Testing (Simulación de Shocks y Contagio EWMA)</span>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Propagación de shocks financieros individuales sobre el portafolio en base a correlaciones condicionales dinámicas</span>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1.5fr 2fr 1.5fr; gap: 1.5rem; align-items: start;">
+          
+          <!-- Columna 1: Controles de Shock -->
+          <div style="display: flex; flex-direction: column; gap: 1.25rem; background: rgba(15, 23, 42, 0.6); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+              <label for="stress-asset-selector" style="font-size: 0.85rem; color: var(--text-secondary);">Activo a Estresar:</label>
+              <select id="stress-asset-selector" class="custom-select" style="padding: 0.4rem 0.6rem; font-size: 0.85rem;">
+                <!-- Rellenado dinámicamente por JS -->
+              </select>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.85rem; font-weight: 500;">Magnitud del Shock:</span>
+                <span id="stress-shock-value" style="font-family: var(--font-family-title); font-size: 1.1rem; font-weight: 600; color: var(--color-red);">0.0%</span>
+              </div>
+              <input type="range" id="stress-shock-slider" class="custom-range" min="-30" max="30" step="1" value="0" style="background: linear-gradient(to right, var(--color-red) 50%, var(--color-green) 50%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted);">
+                <span>Caída (-30%)</span>
+                <span>Alza (+30%)</span>
+              </div>
+            </div>
+            
+            <button id="btn-reset-stress" class="btn-reset-simulation" style="font-size: 0.8rem; padding: 0.45rem;">
+              <i class="fa-solid fa-rotate-left"></i> Restablecer Shock (0%)
+            </button>
+          </div>
+          
+          <!-- Columna 2: Impacto Contagiado (Retornos esperados) -->
+          <div style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 8px;">
+            <h4 style="font-size: 0.85rem; color: var(--text-primary); text-transform: uppercase; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">Propagación del Contagio (Retornos Condicionales)</h4>
+            <div id="stress-contagion-list" style="display: flex; flex-direction: column; gap: 0.65rem;">
+              <!-- Rellenado dinámicamente por JS -->
+            </div>
+          </div>
+          
+          <!-- Columna 3: Impacto en VaR y CVaR del Portafolio -->
+          <div class="backtest-results-card" style="margin-top: 0; background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 8px; height: 100%; justify-content: space-between;">
+            <h4 style="font-size: 0.85rem; color: var(--text-primary); text-transform: uppercase; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem; margin-bottom: 0.25rem;">Impacto en Portafolio</h4>
+            
+            <div class="backtest-row">
+              <span class="backtest-label">Rendimiento Estimado:</span>
+              <span class="backtest-value" id="stress-portfolio-return" style="font-weight: bold;">0.0000%</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">VaR 95% Stressed:</span>
+              <span class="backtest-value" id="stress-var-95" style="color: var(--color-red);">--%</span>
+            </div>
+            <div class="backtest-row" style="font-size: 0.75rem; color: var(--text-muted); padding-left: 0.5rem; margin-top: -0.25rem; border-bottom: none;">
+              <span>Base: <span id="stress-base-var-95">--%</span></span>
+              <span>Cambio: <span id="stress-change-var-95">--</span></span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">CVaR 95% Stressed:</span>
+              <span class="backtest-value" id="stress-cvar-95" style="color: var(--color-red);">--%</span>
+            </div>
+            <div class="backtest-row" style="font-size: 0.75rem; color: var(--text-muted); padding-left: 0.5rem; margin-top: -0.25rem; border-bottom: none;">
+              <span>Base: <span id="stress-base-cvar-95">--%</span></span>
+              <span>Cambio: <span id="stress-change-cvar-95">--</span></span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 3: RESUMEN DEL PORTAFOLIO (OVERVIEW) -->
+    <section id="overview" class="tab-panel">
+      
+      <!-- Fila de KPI Cards -->
+      <div class="overview-grid">
+        <div class="card metric-card red-indicator" id="kpi-var95">
+          <div class="metric-header">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span class="metric-label">VaR Promedio (95%)</span>
+              <span class="badge-kri">KRI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI VaR 95%: Pérdida máxima esperada en un día normal de mercado (con un 95% de confianza).</span></span>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          </div>
+          <div class="metric-value" id="val-var95">--%</div>
+          <div class="metric-footer">Pérdida máxima esperada diaria (95% conf.)</div>
+        </div>
+        
+        <div class="card metric-card red-indicator" id="kpi-cvar95">
+          <div class="metric-header">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span class="metric-label">CVaR Promedio (95%)</span>
+              <span class="badge-kri">KRI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI CVaR 95%: Pérdida promedio si se rompe la barrera del VaR (Riesgo de Cola).</span></span>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-skull-crossbones"></i></div>
+          </div>
+          <div class="metric-value" id="val-cvar95">--%</div>
+          <div class="metric-footer">Pérdida promedio en escenarios de estrés (95%)</div>
+        </div>
+        
+        <div class="card metric-card brand-indicator" id="kpi-var99">
+          <div class="metric-header">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span class="metric-label">VaR Promedio (99%)</span>
+              <span class="badge-kri">KRI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI VaR 99%: Pérdida máxima esperada en un escenario de mercado extremo (con un 99% de confianza).</span></span>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-shield-cat"></i></div>
+          </div>
+          <div class="metric-value" id="val-var99">--%</div>
+          <div class="metric-footer">Límite extremo de pérdida diaria (99% conf.)</div>
+        </div>
+        
+        <div class="card metric-card brand-indicator" id="kpi-cvar99">
+          <div class="metric-header">
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <span class="metric-label">CVaR Promedio (99%)</span>
+              <span class="badge-kri">KRI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI CVaR 99%: Pérdida promedio esperada en el 1% de los peores escenarios (cola extrema).</span></span>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+          </div>
+          <div class="metric-value" id="val-cvar99">--%</div>
+          <div class="metric-footer">Pérdida esperada en cola extrema (99%)</div>
+        </div>
+      </div>
+      
+      <!-- Layout de Gráficos Principales -->
+      <div class="dashboard-layout" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <!-- Gráfico del Portafolio Histórico -->
+        <div class="card">
+          <div class="card-title">
+            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+              <span>Rendimiento del Portafolio & Volatilidad Condicional</span>
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Serie Histórica de Retornos vs. Varianza</span>
+            </div>
+            <!-- Botones de rango temporal eToro Style -->
+            <div class="range-selector-container">
+              <button class="time-range-btn active" data-chart="portfolio" data-range="all">MÁX</button>
+              <button class="time-range-btn" data-chart="portfolio" data-range="1y">1A</button>
+              <button class="time-range-btn" data-chart="portfolio" data-range="6m">6M</button>
+              <button class="time-range-btn" data-chart="portfolio" data-range="3m">3M</button>
+              <button class="time-range-btn" data-chart="portfolio" data-range="1m">1M</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chart-portfolio-history"></canvas>
+          </div>
+        </div>
+      </div>         <div class="card">
+          <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Composición del Portafolio (Pesos de Capital)</span>
+            <span style="display: flex; align-items: center; gap: 0.35rem;">
+              <span class="badge-kpi">KPI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KPI Composición del Portafolio: Porcentajes de asignación de capital a cada activo en la cartera.</span></span>
+            </span>
+          </div>
+          <div style="height: 180px; position: relative;">
+            <canvas id="chart-portfolio-weights"></canvas>
+          </div>
+          <div class="weights-list" id="portfolio-weights-legend">
+            <!-- Rellenado dinámicamente por JS -->
+          </div>
+          <!-- Alerta de validación de pesos -->
+          <div id="portfolio-weights-error" style="margin-top: 1rem; font-size: 0.8rem; padding: 0.6rem; border-radius: 6px; display: none; transition: var(--transition-fast);">
+            <!-- Contenido dinámico -->
+          </div>
+        </div>
+
+        <!-- Contribución al Riesgo (VaR Componente) -->
+        <div class="card">
+          <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Contribución al Riesgo de Cola (VaR Componente)</span>
+            <span style="display: flex; align-items: center; gap: 0.35rem;">
+              <span class="badge-kri">KRI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI Contribución al Riesgo: Porcentaje del riesgo total de la cartera (VaR) que aporta individualmente cada activo.</span></span>
+            </span>
+          </div>
+          <div style="height: 180px; position: relative;">
+            <canvas id="chart-portfolio-risk"></canvas>
+          </div>
+          <div class="weights-list" id="portfolio-risk-legend">
+            <!-- Rellenado dinámicamente por JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribución de Retornos Logarítmicos del Portafolio -->
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span>Distribución de Retornos del Portafolio y Exceso de Curtosis</span>
+              <span class="badge-kri">KRI</span>
+              <span class="tooltip-container"><i class="fa-solid fa-info-circle"></i><span class="tooltip-text">KRI Distribución de Retornos: Densidad empírica frente a teóricas para evaluar riesgo de colas (leptocurtosis) del portafolio total.</span></span>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Validación de colas pesadas frente a la distribución Normal y t-Student del portafolio total</span>
+          </div>
+          <button id="btn-open-port-dist-info" class="math-btn" style="background-color: var(--color-brand); color: white; padding: 0.35rem 0.75rem; font-size: 0.82rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; border: none; font-family: var(--font-family-title);">
+            <i class="fa-solid fa-circle-info"></i> Evidencia y Concepto
+          </button>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="chart-container" style="height: 280px;">
+            <canvas id="chart-portfolio-distribution"></canvas>
+          </div>
+          <div id="portfolio-distribution-stats" style="border-top: 1px solid var(--border-color); padding-top: 0.85rem; font-family: var(--font-family-title); font-size: 0.85rem; color: var(--text-primary); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            <!-- Rellenado dinámicamente por JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PESTAÑA 4: VALIDACIÓN Y BACKTESTING -->
+    <section id="backtest" class="tab-panel">
+      <div class="backtest-layout">
+        
+        <!-- Gráfico del Backtesting (Loss vs VaR) -->
+        <div class="card">
+          <div class="card-title">
+            <span>Backtesting del VaR Condicional (Últimos 250 Días)</span>
+            <span style="font-size: 0.85rem; color: var(--text-secondary);">Pérdidas Diarias Reales vs. Límites de Riesgo</span>
+          </div>
+          <div class="chart-container" style="height: 380px;">
+            <canvas id="chart-backtesting"></canvas>
+          </div>
+        </div>
+        
+        <!-- Resultados del Backtesting Multidimensional -->
+        <div class="card backtest-results-card" style="max-height: 520px; overflow-y: auto;">
+          <div class="card-title">Validación Avanzada de Riesgo de Cola</div>
+          
+          <div style="background-color: rgba(255, 255, 255, 0.02); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;">
+            <span class="backtest-label" style="display: block; font-size: 0.8rem; margin-bottom: 0.25rem;">Estatus de Calibración General</span>
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.25rem;">
+              <span class="model-status-badge passed" id="badge-k95">VaR 95% ACEPTADO</span>
+              <span class="model-status-badge passed" id="badge-k99">VaR 99% ACEPTADO</span>
+            </div>
+          </div>
+          
+          <div class="backtest-row">
+            <span class="backtest-label">Muestra de Validación</span>
+            <span class="backtest-value" id="bt-sample">250 días</span>
+          </div>
+          
+          <!-- Sección VaR 95% -->
+          <div style="margin-top: 0.65rem; border-top: 1px solid var(--border-color); padding-top: 0.65rem;">
+            <h4 style="font-size: 0.85rem; color: var(--color-brand); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.3px;">Métricas VaR Condicional 95%</h4>
+            <div class="backtest-row">
+              <span class="backtest-label">Fallas Reales vs. Esperadas</span>
+              <span class="backtest-value" id="bt-fail95">-- / 12.50</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Kupiec (Frecuencia)</span>
+              <span class="backtest-value" id="bt-pval95">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Christoffersen (Rachas)</span>
+              <span class="backtest-value" id="bt-pval-ind95">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Christoffersen (Combined CC)</span>
+              <span class="backtest-value" id="bt-pval-cc95">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">Test de López Score (Obs / Exp)</span>
+              <span class="backtest-value" id="bt-lopez-score95">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Test de López (Magnitud)</span>
+              <span class="backtest-value" id="bt-lopez-pval95">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">Veredicto Cobertura (95%)</span>
+              <span class="backtest-value" id="bt-diag95" style="font-weight: bold;">--</span>
+            </div>
+          </div>
+          
+          <!-- Sección VaR 99% -->
+          <div style="margin-top: 0.65rem; border-top: 1px solid var(--border-color); padding-top: 0.65rem;">
+            <h4 style="font-size: 0.85rem; color: var(--color-accent); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.3px;">Métricas VaR Condicional 99%</h4>
+            <div class="backtest-row">
+              <span class="backtest-label">Fallas Reales vs. Esperadas</span>
+              <span class="backtest-value" id="bt-fail99">-- / 2.50</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Kupiec (Frecuencia)</span>
+              <span class="backtest-value" id="bt-pval99">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Christoffersen (Rachas)</span>
+              <span class="backtest-value" id="bt-pval-ind99">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Christoffersen (Combined CC)</span>
+              <span class="backtest-value" id="bt-pval-cc99">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">Test de López Score (Obs / Exp)</span>
+              <span class="backtest-value" id="bt-lopez-score99">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">p-valor Test de López (Magnitud)</span>
+              <span class="backtest-value" id="bt-lopez-pval99">--</span>
+            </div>
+            <div class="backtest-row">
+              <span class="backtest-label">Veredicto Cobertura (99%)</span>
+              <span class="backtest-value" id="bt-diag99" style="font-weight: bold;">--</span>
+            </div>
+          </div>
+          
+          <div class="backtest-row" style="margin-top: 0.65rem; border-top: 1px solid var(--border-color); padding-top: 0.65rem;">
+            <span class="backtest-label">Grados de Libertad Portafolio</span>
+            <span class="backtest-value" id="bt-df">--</span>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Tabla de Excepciones Detectadas -->
+      <div class="card exceptions-table-card">
+        <div class="card-title">
+          <span>Detalle de Excepciones de Cobertura (Excesos de VaR)</span>
+          <span style="font-size: 0.8rem; color: var(--color-red); font-weight: normal;">Haz clic en "Ver Detalles" para ver el comportamiento de las acciones en ese día</span>
+        </div>
+        <div class="exceptions-table-container">
+          <table class="exceptions-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Nivel Confianza</th>
+                <th>Pérdida Portafolio</th>
+                <th>Umbral VaR</th>
+                <th>Exceso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="exceptions-table-body">
+              <!-- Rellenado dinámicamente por JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+    </section>
+
+  </main>
+
+  <!-- MODAL INTERACTIVO DE DETALLES DE EXCEPCIÓN -->
+  <div class="modal-overlay" id="exception-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Detalle del Exceso de VaR</h3>
+        <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body-content">
+        <!-- Rellenado dinámicamente por JS al hacer clic en ver detalles -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL INTERACTIVO DE FUNDAMENTACIÓN MATEMÁTICA -->
+  <div class="modal-overlay" id="math-modal">
+    <div class="modal-content" style="max-width: 700px; max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-calculator"></i> Fundamentación Matemática del Modelo</h3>
+        <button class="btn-close-modal" id="btn-close-math-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-primary);">        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            1. Rendimiento Logarítmico y Retorno del Portafolio
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            Para modelar el comportamiento continuo de los precios de cierre diarios, calculamos los retornos logarítmicos continuos para cada activo $i$:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$r_{i,t} = \ln\left(\frac{P_{i,t}}{P_{i,t-1}}\right)$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            El retorno diario del portafolio $r_{p,t}$ se calcula como el promedio ponderado de los retornos individuales de los activos en base al vector de pesos de capital $\mathbf{w} = [w_1, w_2, \dots, w_K]^T$:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$r_{p,t} = \sum_{i=1}^{K} w_i r_{i,t}$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            Donde $\sum_{i=1}^{K} w_i = 100\%$ representa la restricción presupuestaria de asignación total de capital.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            2. Modelo de Volatilidad Condicional EGARCH(1,1)-t
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            El modelo EGARCH (Exponential GARCH) de Nelson (1991) captura la asimetría en la respuesta de la volatilidad ante choques de retornos (efecto apalancamiento) y evita la necesidad de imponer restricciones de no-negatividad en los parámetros. La varianza condicional se modela como:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$\ln(\sigma_t^2) = \omega + \beta \ln(\sigma_{t-1}^2) + \alpha \left( \left| z_{t-1} \right| - E\left[|z_{t-1}|\right] \right) + \gamma z_{t-1}$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            Donde $z_{t} = \epsilon_t / \sigma_t$ representa el choque estandarizado, que se asume que sigue una distribución <strong>t-Student</strong> para modelar colas pesadas. El coeficiente $\gamma$ mide el efecto apalancamiento: si $\gamma < 0$, un choque negativo (pérdida) incrementa la volatilidad futura en mayor medida que un choque positivo de igual magnitud.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            3. Expected Shortfall / Expected Tail Loss (CVaR)
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            El Valor en Riesgo Condicional (CVaR) al nivel de confianza $1-\alpha$ (e.g., 95% o 99%) representa la pérdida promedio esperada en los peores escenarios (cuando se supera la barrera del VaR). Es una medida de riesgo coherente que captura el riesgo de cola:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$CVaR_{\alpha} = E\left[ L \mid L > VaR_{\alpha} \right] = \frac{1}{\alpha} \int_{0}^{\alpha} VaR_{u} \, du$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            Para una distribución condicional t-Student paramétrica con $\nu$ grados de libertad, se deriva de forma analítica en función de la función de densidad $f_t$ y el cuantil de corte $t_{\alpha}$:
+            $$CVaR_{\alpha} = -\mu + \sigma_t \cdot \left[ \frac{f_t(t_{\alpha}; \nu)}{\alpha} \left( \frac{\nu + t_{\alpha}^2}{\nu - 1} \right) \right] \cdot \sqrt{\frac{\nu - 2}{\nu}}$$
+          </p>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            4. Prueba de Cobertura Incondicional de Kupiec ($LR_{uc}$)
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            La prueba de Proporción de Fallas (POF) de Kupiec (1995) valida si el número de excepciones reales ($N$) en la ventana de evaluación ($T$) coincide con la tasa esperada ($\alpha = 1 - \text{conf}$). El estadístico se distribuye como $\chi^2(1)$:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$LR_{uc} = -2 \ln \left( \frac{(1 - \alpha)^{T - N} \alpha^N}{(1 - \hat{p})^{T - N} \hat{p}^N} \right) \sim \chi^2(1)$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            Donde $\hat{p} = N/T$. Rechazamos la hipótesis nula de correcta cobertura a un nivel del 5% si $LR_{uc} > 3.8415$.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            5. Prueba de Independencia y Cobertura Condicional de Christoffersen ($LR_{ind}$ y $LR_{cc}$)
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            La prueba de Christoffersen (1998) evalúa si las excepciones ocurren de manera independiente en el tiempo (evitando agrupamientos o rachas de fallas). El estadístico de independencia ($LR_{ind}$) analiza la matriz de transición de fallas:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$LR_{ind} = -2 \ln \left( \frac{(1 - \pi)^{n_{00} + n_{10}} \pi^{n_{01} + n_{11}}}{(1 - \pi_{01})^{n_{00}} \pi_{01}^{n_{01}} (1 - \pi_{11})^{n_{10}} \pi_{11}^{n_{11}}} \right) \sim \chi^2(1)$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            Donde $n_{ij}$ es la cantidad de transiciones del estado $i$ al estado $j$ (donde 1 indica excepción, y 0 no-excepción), $\pi_{01} = n_{01}/(n_{00}+n_{01})$, $\pi_{11} = n_{11}/(n_{10}+n_{11})$ y $\pi = (n_{01}+n_{11})/T$. El estadístico de Cobertura Condicional Conjunta es $LR_{cc} = LR_{uc} + LR_{ind} \sim \chi^2(2)$, el cual evalúa conjuntamente frecuencia e independencia. Rechazamos al 5% si $LR_{cc} > 5.9915$.
+          </p>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            6. Test de Magnitud del Exceso de López (1998)
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            El test de López (1998) incorpora la magnitud de la pérdida cuando el VaR es excedido, definiendo una función de costo cuadrática:
+          </p>
+          <div style="background: rgba(255,255,255,0.02); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; overflow-x: auto; text-align: center;">
+            $$C_t = \begin{cases} 1 + (L_t - VaR_t)^2 & \text{si } L_t > VaR_t \\ 0 & \text{si } L_t \le VaR_t \end{cases}$$
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); text-align: justify;">
+            Bajo la hipótesis nula de calibración perfecta, comparamos la puntuación observada $C_{total} = \sum C_t$ con su valor esperado $E[C_{total}] = \sum E[C_t]$ y varianza $Var(C_{total}) = \sum Var(C_t)$ calculados analíticamente sobre la distribución t-Student condicional de los retornos. Obtenemos el estadístico $Z = (C_{total} - E[C_{total}]) / \sqrt{Var(C_{total})} \sim N(0, 1)$. Rechazamos el modelo si $|Z| > 1.96$ (significancia del 5%).
+          </p>
+        </div>
+
+        <div style="margin-top: 1.5rem; margin-bottom: 1rem;">
+          <h4 style="color: var(--color-accent); font-size: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">
+            7. Hipótesis y Pruebas Estadísticas Preliminares
+          </h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: justify;">
+            Antes de modelar el riesgo, se realizan pruebas estadísticas sobre la serie histórica de retornos para validar las siguientes hipótesis fundamentales:
+          </p>
+          <ul style="font-size: 0.85rem; color: var(--text-secondary); margin-left: 1.25rem; list-style-type: disc; display: flex; flex-direction: column; gap: 0.5rem; text-align: justify;">
+            <li>
+              <strong>Prueba Dickey-Fuller Aumentada (ADF):</strong> Valida la estacionariedad de los retornos (retornos con media y varianza constantes en el tiempo). 
+              <br><em>Hipótesis:</em> $H_0$: Serie no estacionaria (raíz unitaria) vs. $H_1$: Serie estacionaria. Se rechaza $H_0$ con p-valor $< 0.01$, confirmando la validez del análisis de series de tiempo.
+            </li>
+            <li>
+              <strong>Prueba Jarque-Bera (Normalidad):</strong> Evalúa si los retornos siguen una distribución normal.
+              <br><em>Hipótesis:</em> $H_0$: Asimetría es 0 y Curtosis es 3 (Normalidad) vs. $H_1$: No normalidad. El rechazo categórico de $H_0$ justifica plenamente el uso de la distribución <strong>t-Student</strong> en los modelos EGARCH y EWMA para capturar las colas pesadas de la muestra.
+            </li>
+            <li>
+              <strong>Prueba de Ljung-Box (Autocorrelación):</strong> Analiza si los residuos de la serie histórica están autocorrelacionados.
+              <br><em>Hipótesis:</em> $H_0$: Los datos son independientes (ruido blanco) vs. $H_1$: Los datos presentan dependencia temporal. Su aplicación en los retornos al cuadrado valida la presencia de agrupamiento de volatilidad (efectos ARCH), lo cual sustenta la necesidad de emplear un modelo dinámico de varianza condicional como el EGARCH.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL INTERACTIVO DE EVIDENCIA DE COLAS PESADAS (ACTIVO) -->
+  <div class="modal-overlay" id="dist-info-modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-circle-info" style="color: var(--color-brand);"></i> Evidencia de Colas Pesadas (Activo)</h3>
+        <button class="btn-close-modal" id="btn-close-dist-info-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-primary);">
+        <p style="margin-bottom: 0.85rem; text-align: justify;">
+          La distribución empírica de los retornos (representada por las barras en el gráfico) del activo seleccionado exhibe <strong>leptocurtosis</strong>. Esto significa que tiene un pico central más pronunciado y colas más gruesas/pesadas que una Distribución Normal teórica.
+        </p>
+        <p style="margin-bottom: 0.85rem; text-align: justify;">
+          La curva de la <strong>Distribución Normal (línea azul)</strong> subestima de manera sistemática la probabilidad de ocurrencia de pérdidas extremas. En la práctica financiera, usar una hipótesis normal para el cálculo del Valor en Riesgo (VaR) expondría al portafolio a pérdidas imprevistas severas.
+        </p>
+        <p style="text-align: justify;">
+          Por el contrario, la curva de la <strong>distribución t-Student ajustada (línea roja)</strong> modela con precisión matemática esta leptocurtosis. Esto proporciona una base estadística sólida y coherente para la calibración del modelo univariado de volatilidad EGARCH-t y las estimaciones robustas de VaR y CVaR condicionales.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL INTERACTIVO DE EVIDENCIA DE COLAS PESADAS (PORTAFOLIO) -->
+  <div class="modal-overlay" id="port-dist-info-modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-circle-info" style="color: var(--color-brand);"></i> Evidencia de Colas Pesadas (Portafolio)</h3>
+        <button class="btn-close-modal" id="btn-close-port-dist-info-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-primary);">
+        <p style="margin-bottom: 0.85rem; text-align: justify;">
+          La distribución empírica de los retornos (representada por las barras en el gráfico) de la cartera consolidada exhibe <strong>leptocurtosis extrema</strong>. Esto es resultado de la agregación de activos individuales con colas pesadas y correlaciones de contagio positivas.
+        </p>
+        <p style="margin-bottom: 0.85rem; text-align: justify;">
+          La curva de la <strong>Distribución Normal (línea azul)</strong> subestima de manera sistemática la probabilidad de pérdidas extremas agregadas del portafolio. Si el gestor de riesgos utilizara la hipótesis gaussiana para establecer límites de capital, la probabilidad de quiebra en eventos de estrés de mercado sería muy superior a la tolerancia teórica.
+        </p>
+        <p style="text-align: justify;">
+          Por el contrario, la curva de la <strong>distribución t-Student ajustada (línea roja)</strong> modela con fidelidad la probabilidad en las colas de la cartera global. Esto valida el uso empírico de medidas de riesgo coherentes como el Valor en Riesgo (VaR) condicional paramétrico t-Student para proteger el patrimonio ante shocks sistémicos del mercado tecnológico.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enlace a Lógica Javascript del Dashboard -->
+  <script src="app.js"></script>
+</body>
+</html>

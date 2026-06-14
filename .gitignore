@@ -1,0 +1,55 @@
+# Entornos de compilación y archivos temporales de PyInstaller
+build/
+dist/
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Entornos virtuales de Python
+venv/
+.venv/
+env/
+.env
+ENV/
+venv_build/
+
+# Carpetas de datos y salidas generadas dinámicamente
+outputs/
+data/processed/*.json
+data/processed/*.csv
+!data/processed/.gitkeep
+
+# Ejecutables locales y herramientas empaquetadoras en la raíz
+Proyecto_Riesgo_Mercado.exe
+upx.exe
+/*.csv
+
+
+# Archivos de entorno local
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Editores e IDEs
+.vscode/
+.idea/
+*.suo
+*.sln
+*.swp
+*.tmp
+
+# Archivos de sistema de Windows y MacOS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Archivos de registro / Logs
+*.log

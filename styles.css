@@ -1,0 +1,1201 @@
+/* Importación de tipografía desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Paleta de Colores Corporativa Premium (eToro / es.investing.com inspired) */
+  --bg-body: #0b0f19;
+  --bg-card: rgba(17, 25, 40, 0.65);
+  --bg-header: rgba(11, 15, 25, 0.85);
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  
+  /* Acentos y Señales Financieras */
+  --color-brand: #4f46e5; /* Índigo */
+  --color-accent: #8b5cf6; /* Púrpura */
+  --color-green: #10b981; /* Ganancias / Retornos positivos */
+  --color-red: #f43f5e; /* Pérdidas / Riesgo / VaR */
+  --color-warning: #f59e0b; /* Alerta / Optimización */
+  
+  /* Sombreado y Transiciones */
+  --shadow-neon: 0 0 15px rgba(79, 70, 229, 0.15);
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --font-family-title: 'Outfit', sans-serif;
+  --font-family-body: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  font-family: var(--font-family-body);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-body);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand);
+}
+
+/* Header Premium */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(12px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-logo {
+  background: linear-gradient(135deg, var(--color-brand), var(--color-accent));
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-family-title);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.4);
+}
+
+.brand-name {
+  font-family: var(--font-family-title);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+  background: linear-gradient(to right, #ffffff, #9ca3af);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-brand);
+  background-color: rgba(79, 70, 229, 0.12);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  margin-left: 0.5rem;
+}
+
+/* Navegación y Pestañas */
+.tabs-navigation {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  padding: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-family-title);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  background-color: var(--color-brand);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+/* Layout Principal */
+main {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.tab-panel {
+  display: none;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tarjetas e Interfaces de Glassmorphism */
+.card {
+  position: relative;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-neon);
+  transition: var(--transition-smooth);
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  z-index: 150; /* Superponer sobre otras tarjetas y el header pegajoso al interactuar */
+}
+
+.card-title {
+  font-family: var(--font-family-title);
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Overview Panel Grid */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.metric-value {
+  font-family: var(--font-family-title);
+  font-size: 1.85rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.metric-footer {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Clases específicas para colores de métricas */
+.metric-card.red-indicator .metric-value {
+  color: var(--color-red);
+}
+.metric-card.red-indicator .metric-icon {
+  background-color: rgba(244, 63, 94, 0.1);
+  color: var(--color-red);
+}
+
+.metric-card.brand-indicator .metric-value {
+  color: var(--color-accent);
+}
+.metric-card.brand-indicator .metric-icon {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--color-accent);
+}
+
+.metric-card.green-indicator .metric-value {
+  color: var(--color-green);
+}
+.metric-card.green-indicator .metric-icon {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-green);
+}
+
+/* Gráficos en Dashboard Overview */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+}
+
+.weights-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.weight-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.weight-asset {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.dot-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.weight-val {
+  font-family: var(--font-family-title);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Pestaña: EGARCH Asset Viewer */
+.asset-viewer-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+}
+
+.asset-selection-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.asset-dropdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.custom-select {
+  background-color: rgba(15, 23, 42, 0.8);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-family-title);
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.custom-select:focus {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 10px rgba(79, 70, 229, 0.2);
+}
+
+/* Tabla de Parámetros EGARCH */
+.params-table-container {
+  margin-top: 0.5rem;
+}
+
+.params-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.params-table th {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.params-table td {
+  padding: 0.85rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.9rem;
+}
+
+.param-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.param-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: block;
+  font-family: var(--font-family-body);
+}
+
+.param-val {
+  font-family: var(--font-family-title);
+  font-weight: 600;
+}
+
+.pval-badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.pval-badge.significant {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: var(--color-green);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.pval-badge.not-significant {
+  background-color: rgba(244, 63, 94, 0.12);
+  color: var(--color-red);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+
+/* Pestaña: Contagio y EWMA */
+.ewma-layout {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 1.5rem;
+}
+
+.simulation-control-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.control-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider-label {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.slider-value {
+  font-family: var(--font-family-title);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-warning);
+}
+
+.custom-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #1e293b;
+  outline: none;
+  cursor: pointer;
+}
+
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-warning);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+  transition: var(--transition-fast);
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.btn-reset-simulation {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: var(--font-family-title);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-align: center;
+}
+
+.btn-reset-simulation:hover {
+  background-color: var(--color-warning);
+  color: #0b0f19;
+  border-color: var(--color-warning);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Pestaña: Validación y Backtesting */
+.backtest-layout {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.backtest-results-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.backtest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 0.5rem;
+}
+
+.backtest-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.backtest-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.backtest-value {
+  font-family: var(--font-family-title);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.model-status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.model-status-badge.passed {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--color-green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.model-status-badge.failed {
+  background-color: rgba(244, 63, 94, 0.15);
+  color: var(--color-red);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+/* Tabla de Excepciones de Backtesting */
+.exceptions-table-card {
+  width: 100%;
+}
+
+.exceptions-table-container {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.exceptions-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.exceptions-table th {
+  position: sticky;
+  top: 0;
+  background-color: #111827;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1;
+}
+
+.exceptions-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+}
+
+.exceptions-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.badge-confidence {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.badge-confidence.c95 {
+  background-color: rgba(49, 130, 189, 0.15);
+  color: #3182bd;
+  border: 1px solid rgba(49, 130, 189, 0.3);
+}
+
+.badge-confidence.c99 {
+  background-color: rgba(222, 45, 38, 0.15);
+  color: #de2d26;
+  border: 1px solid rgba(222, 45, 38, 0.3);
+}
+
+.btn-details {
+  background-color: rgba(79, 70, 229, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #a5b4fc;
+  font-family: var(--font-family-title);
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.1);
+}
+
+.btn-details:hover {
+  background-color: var(--color-brand);
+  color: white;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.4);
+  transform: translateY(-1px);
+}
+
+
+/* Modal interactivo de fallas */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-fast);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background-color: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  transform: translateY(20px);
+  transition: var(--transition-smooth);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-family: var(--font-family-title);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-close-modal:hover {
+  color: var(--color-red);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-row {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.modal-row.total-loss {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--color-red);
+  border-bottom-width: 2px;
+}
+
+.asset-contributions {
+  margin-top: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.01);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.contrib-title {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.contrib-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.contrib-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Selectores de Rango y Resolución Premium */
+.range-selector-container,
+.resolution-selector-container {
+  display: inline-flex;
+  background-color: rgba(30, 41, 59, 0.4);
+  border: 1px solid var(--border-color);
+  padding: 2px;
+  border-radius: 6px;
+  gap: 2px;
+  align-items: center;
+}
+
+.time-range-btn,
+.res-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-family-title);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.time-range-btn:hover,
+.res-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.time-range-btn.active,
+.res-btn.active {
+  color: #ffffff;
+  background-color: var(--color-brand);
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.3);
+}
+
+/* Ajustes de alineación para la barra de títulos */
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Layout Estilo TradingView (EGARCH) */
+.tradingview-layout {
+  display: grid;
+  grid-template-columns: 2.3fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.charts-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-column {
+  display: flex;
+  flex-direction: column;
+}
+/* Portada e Inicio Premium */
+.hero-section {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-title {
+  font-family: var(--font-family-title);
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1.25;
+  background: linear-gradient(to right, #ffffff, #8b5cf6, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.75rem;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.author-item {
+  transition: var(--transition-fast);
+}
+
+.author-item:hover {
+  border-color: var(--border-hover) !important;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  transform: translateX(4px);
+}
+
+.directory-card {
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.directory-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-brand) !important;
+  box-shadow: var(--shadow-neon);
+}
+
+/* Responsividad */
+@media (max-width: 1024px) {
+  header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .overview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard-layout, .tradingview-layout, .asset-viewer-layout, .ewma-layout, .backtest-layout {
+    grid-template-columns: 1fr;
+  }
+  .chart-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 640px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .tabs-navigation {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* Estilos de enfoque para los inputs de pesos de portafolio */
+.portfolio-weight-input {
+  transition: var(--transition-fast);
+}
+.portfolio-weight-input:focus {
+  border-color: var(--color-brand) !important;
+  outline: none;
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.4);
+}
+
+/* Efecto hover premium para el botón de fundamentación matemática */
+#btn-open-math {
+  transition: var(--transition-fast);
+}
+#btn-open-math:hover {
+  background-color: var(--color-accent) !important;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.45);
+  transform: scale(1.025);
+}
+
+/* Alerta de validación de pesos del portafolio - Estilos Premium */
+#portfolio-weights-error {
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Fallback de código y estilo para fórmulas matemáticas sin conexión */
+.math-fallback-code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  color: var(--color-warning);
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.25) !important;
+  padding: 0.75rem;
+  display: block;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.12) !important;
+  word-break: break-all;
+  text-align: center;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+/* =========================================================================
+   ELEMENTOS INTERACTIVOS Y SEÑALIZACIÓN DILIGENTE
+   Garantiza que el usuario identifique de inmediato los controles dinámicos.
+   ========================================================================= */
+
+/* Animaciones de pulsación de control interactivo */
+@keyframes pulse-interactive {
+  0% {
+    box-shadow: 0 0 3px rgba(79, 70, 229, 0.25);
+    border-color: var(--border-color);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+    border-color: rgba(79, 70, 229, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 3px rgba(79, 70, 229, 0.25);
+    border-color: var(--border-color);
+  }
+}
+
+@keyframes pulse-slider-thumb {
+  0% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.45);
+  }
+}
+
+/* Destacar los menús desplegables e inputs numéricos interactivos */
+.custom-select,
+.portfolio-weight-input {
+  animation: pulse-interactive 2.5s infinite ease-in-out;
+  cursor: pointer;
+}
+
+/* Desactivar animación en foco para mejor usabilidad y añadir borde brillante */
+.custom-select:focus,
+.portfolio-weight-input:focus {
+  animation: none;
+  border-color: var(--color-brand) !important;
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.6) !important;
+}
+
+/* Pulsación persistente en el slider Lambda para llamar la atención del usuario */
+.custom-range::-webkit-slider-thumb {
+  animation: pulse-slider-thumb 2.5s infinite ease-in-out;
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+  animation: none;
+  transform: scale(1.25);
+  background-color: #ffffff;
+  box-shadow: 0 0 15px var(--color-warning);
+}
+
+/* Indicación de navegación interactiva en tarjetas de directorio (Inicio) */
+.directory-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.directory-card::after {
+  content: 'Clic para navegar →';
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.8rem;
+  font-size: 0.72rem;
+  font-family: var(--font-family-title);
+  color: var(--color-brand);
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: var(--transition-smooth);
+}
+
+.directory-card:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Highlight y micro-escalado para botones interactivos de rango y resolución */
+.time-range-btn,
+.res-btn,
+.btn-details,
+.btn-reset-simulation {
+  transition: var(--transition-fast);
+}
+
+.time-range-btn:hover,
+.res-btn:hover,
+.btn-details:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-reset-simulation:hover {
+  transform: scale(1.02);
+}
+
+/* Añadir un indicador flotante interactivo (badge) a contenedores interactivos clave */
+.slider-container,
+.asset-dropdown-container,
+.resolution-selector-container,
+.range-selector-container {
+  position: relative;
+}
+
+.slider-container::before {
+  content: 'AJUSTABLE';
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  font-size: 0.58rem;
+  font-family: var(--font-family-title);
+  font-weight: 700;
+  color: var(--color-warning);
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.asset-dropdown-container::before {
+  content: 'SELECCIONABLE';
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  font-size: 0.58rem;
+  font-family: var(--font-family-title);
+  font-weight: 700;
+  color: var(--color-green);
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 0.05rem 0.35rem;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+/* Badges for KPIs and KRIs */
+.badge-kpi, .badge-kri {
+  font-size: 0.62rem;
+  font-family: var(--font-family-title);
+  font-weight: 700;
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.badge-kpi {
+  color: var(--color-green);
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-kri {
+  color: var(--color-red);
+  background-color: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+
+/* Tooltip container and contents */
+.tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin-left: 0.3rem;
+  transition: var(--transition-fast);
+}
+
+.tooltip-container:hover {
+  color: var(--text-primary);
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: #1e293b;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -110px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+  font-size: 0.72rem;
+  font-family: var(--font-family-body);
+  font-weight: normal;
+  line-height: 1.35;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #1e293b transparent transparent transparent;
+}
