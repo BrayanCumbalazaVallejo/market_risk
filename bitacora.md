@@ -582,6 +582,23 @@ Las pruebas de usuario sobre el ejecutable confirman que la barra lateral derech
 
 ---
 
+### Entrada Clínica #21: Optimización de Espacio del Ejecutable y Compresión UPX (LZMA)
+**Fecha/Hora:** 2026-06-14T01:15:00-05:00
+
+#### 1. Objetivo / Requerimiento
+* **Optimizar el espacio en disco del ejecutable portátil**: Reducir el tamaño físico del archivo empaquetado final `dist/Proyecto_Riesgo_Mercado.exe` para mejorar la portabilidad y la rapidez de transferencia.
+* **Mantener compatibilidad y corregir errores de importación**: Asegurar que las exclusiones no rompan el funcionamiento del servidor web local y la lógica de validación estacionaria (ADF) en la subida y eliminación de activos.
+
+#### 2. Protocolo de Tratamiento e Implementación
+* **Compresión UPX Activa (LZMA)**: PyInstaller detectó y utilizó la herramienta `upx.exe` en la raíz del proyecto para comprimir los archivos `.pyd` y `.dll` internos mediante el algoritmo LZMA, reduciendo el binario compilado de ~172 MB a solo ~61.3 MB.
+* **Exclusiones Agresivas de Librerías Redundantes**: Se especificó en [Proyecto_Riesgo_Mercado.spec](file:///c:/Users/BRAYAN/Desktop/market_risk/Proyecto_Riesgo_Mercado.spec) la omisión de paquetes gráficos, de persistencia y de test que el proyecto no requiere en producción (tales como `PyQt5`, `PyQt6`, `PySide2`, `PySide6`, `wx`, backends de `matplotlib` innecesarios, bases de datos `sqlite3`, entornos `IPython`, test suites de NumPy/SciPy/Matplotlib, y frameworks como `torch`, `tensorflow`, `astropy`, `sympy`).
+* **Saneamiento del Error de Conexión del Backend**: Se re-incorporaron de forma explícita `statsmodels` y `patsy` en el empaquetado final de PyInstaller. Su anterior exclusión causaba que `arch` fallara de forma silenciosa al importarse, lo que hacía que el servidor de la API abortara y se cayera en el handler básico que devolvía respuestas en código HTML, disparando el error del token `'<'` en el cliente.
+
+#### 3. Resultados de la Verificación
+* **Integridad y Reducción Aprobadas**: Las pruebas unitarias automatizadas confirmaron que tanto la API de subida como la de eliminación de activos responden con código 200 OK y JSON correcto sin fallar con HTML. Se verificó que el tamaño final del ejecutable en `dist/` se consolidó exitosamente en **61.3 MB** con todas las dependencias necesarias incluidas.
+
+---
+
 ## Cierre Clínico y Bitácora Final del Proyecto
 **Fecha/Hora:** 2026-06-11T21:00:00-05:00
 
@@ -631,8 +648,8 @@ Para probar estadísticamente la precisión y suficiencia de capital del modelo 
 
 ---
 
-### 2. Índice e Inventario Completo de Entradas Clínicas (1 a 20)
-Se presenta la auditoría cronológica de las 20 fases de diagnóstico, tratamiento y remediación del proyecto:
+### 2. Índice e Inventario Completo de Entradas Clínicas (1 a 21)
+Se presenta la auditoría cronológica de las 21 fases de diagnóstico, tratamiento y remediación del proyecto:
 
 | Entrada | Fecha / Hora | Diagnóstico / Requerimiento | Tratamiento Metodológico Aplicado | Estado / Veredicto |
 | :--- | :--- | :--- | :--- | :--- |
@@ -656,6 +673,7 @@ Se presenta la auditoría cronológica de las 20 fases de diagnóstico, tratamie
 | **#18** | 2026-06-13T18:45 | Solución a persistencia y fallback del servidor. | Redirección a directorio persistente del ejecutable, inclusión de scipy.optimize._highspy y exclusión de AMD de baseline. | **APROBADO** (Persistencia y APIs operativas). |
 | **#19** | 2026-06-14T00:20 | Congelación de requerimientos, saneamiento de Git y guía de depuración. | Creación de requirements.txt, configuración de .gitignore y .gitkeep, y redacción de la guía de arquitectura/depuración en el README. | **APROBADO** (Entorno estandarizado y libre de binarios). |
 | **#20** | 2026-06-14T00:38 | Modificación del Flujo de Compilación y Prevención de Error de Conexión. | Unificación del binario compilado en `dist/Proyecto_Riesgo_Mercado.exe` y redacción de la guía preventiva del error del backend. | **APROBADO** (Estructura de distribución saneada). |
+| **#21** | 2026-06-14T01:15 | Optimización de Espacio del Ejecutable y Compresión UPX. | Aplicación de compresión LZMA mediante UPX y exclusión de dependencias redundantes, manteniendo arch operando sin fallas en el backend. | **APROBADO** (Binario reducido a ~61.3 MB y testeado). |
 
 ---
 

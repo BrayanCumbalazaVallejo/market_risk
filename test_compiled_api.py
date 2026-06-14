@@ -14,11 +14,12 @@ def test_api():
     env = os.environ.copy()
     env["PORT"] = "8090"
     
+    log_file = open("server_test.log", "w")
     server_process = subprocess.Popen(
         [exe_path],
         env=env,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+        stdout=log_file,
+        stderr=log_file
     )
     time.sleep(15) # Wait for server to start (accommodate UPX/LZMA extraction)
     
@@ -96,6 +97,7 @@ def test_api():
     except Exception as e:
         print(f"Error terminating server: {e}")
         server_process.kill()
+    log_file.close()
 
 if __name__ == '__main__':
     test_api()
