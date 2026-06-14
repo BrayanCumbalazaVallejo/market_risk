@@ -118,9 +118,11 @@ Para crear un archivo ejecutable portátil (`Proyecto_Riesgo_Mercado.exe`) que e
 venv_build\Scripts\python.exe actualizar_proyecto.py
 ```
 
-El script orquestará la exportación limpia de los datos y compilará la aplicación utilizando PyInstaller. Encontrará el ejecutable final listo en:
-1. La raíz del proyecto (`Proyecto_Riesgo_Mercado.exe`).
-2. El Escritorio de Windows de su máquina (`../Proyecto_Riesgo_Mercado.exe`).
+El script orquestará la exportación limpia de los datos y compilará la aplicación utilizando PyInstaller. Encontrará el ejecutable final listo únicamente en:
+* La carpeta `dist/` del proyecto (`dist/Proyecto_Riesgo_Mercado.exe`).
+
+> [!WARNING]
+> Para mantener limpio el directorio de trabajo y evitar la dispersión de versiones desactualizadas del binario, **el ejecutable ya no se copiará automáticamente a la raíz del repositorio ni al Escritorio del sistema**.
 
 ---
 
@@ -190,5 +192,12 @@ Si deseas alterar las fórmulas cuantitativas, modificar los gráficos generados
      ```bash
      python actualizar_proyecto.py
      ```
-     Este script ejecutará el pipeline de datos para regenerar el JSON procesado y posteriormente recompilará el ejecutable portable `.exe` en la carpeta `dist/` integrando tus cambios de manera transparente.
+     Este script ejecutará el pipeline de datos para regenerar el JSON procesado y posteriormente recompilará el ejecutable portable `.exe` **únicamente** en la carpeta `dist/` (`dist/Proyecto_Riesgo_Mercado.exe`) integrando tus cambios de manera transparente.
+
+> [!CAUTION]
+> **Prevención de Errores de Conexión Recurrentes**:
+> Para evitar caer en el error repetitivo **`"Error de conexion con el backend: Unexpected token '<'"`**:
+> 1. **No abras `index.html` directamente ni a través de un servidor estático (como Live Server en el puerto 5500) sin levantar el backend**: Si el JS realiza peticiones a `/api/upload` o `/api/delete` y el backend no está corriendo, Live Server interceptará la petición y devolverá una página HTML 404 o el propio `index.html` (cuyo primer carácter es `<` de `<!DOCTYPE html>`). Al intentar procesar esto como JSON en el frontend, se lanzará la excepción.
+> 2. **Inicio correcto**: Ejecuta siempre `python launcher.py` o `python server.py` para asegurar que el servidor exponga la API REST en el puerto local correcto.
+> 3. **Excepciones no controladas**: Si el código de Python falla internamente, el servidor web por defecto devolverá el error con una plantilla HTML (Traceback). Inspecciona siempre la consola de la terminal donde corre el backend en Python para identificar fallos.
 

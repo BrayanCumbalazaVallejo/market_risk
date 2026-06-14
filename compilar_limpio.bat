@@ -34,22 +34,14 @@ if %errorlevel% neq 0 (
 
 :: 4. Compilar usando PyInstaller con exclusiones agresivas y data estatica
 echo [INFO] 4/5. Empaquetando aplicacion limpia...
-pyinstaller --noconfirm --onefile --windowed --name=Proyecto_Riesgo_Mercado --clean --upx-dir=. --add-data "index.html;." --add-data "styles.css;." --add-data "app.js;." --add-data "data/processed/dashboard_data.json;data/processed" --add-data "data/raw;data/raw" --hidden-import=server --hidden-import=src.export_dashboard_data --hidden-import=src.risk_model --hidden-import=scipy.optimize._highspy --exclude=tkinter --exclude=seaborn --exclude=PyQt5 --exclude=PyQt6 --exclude=PySide2 --exclude=PySide6 --exclude=wx --exclude=matplotlib.backends.backend_qt5agg --exclude=matplotlib.backends.backend_qt6agg --exclude=matplotlib.backends.backend_wxagg --exclude=matplotlib.backends.backend_gtk3agg --exclude=matplotlib.backends.backend_gtk4agg --exclude=matplotlib.backends.backend_tkagg --exclude=matplotlib.backends.backend_pdf --exclude=matplotlib.backends.backend_svg --exclude=matplotlib.backends.backend_ps --exclude=matplotlib.backends.backend_pgf --exclude=numpy.tests --exclude=scipy.tests --exclude=pandas.tests --exclude=matplotlib.tests --exclude=PIL._avif --exclude=PIL._webp --exclude=PIL._imagingcms --exclude=sqlite3 --exclude=_sqlite3 --exclude=pydoc_data --exclude=statsmodels --exclude=patsy launcher.py
+pyinstaller --noconfirm --onefile --windowed --name=Proyecto_Riesgo_Mercado --clean --upx-dir=. --add-data "index.html;." --add-data "styles.css;." --add-data "app.js;." --add-data "data/processed/dashboard_data.json;data/processed" --add-data "data/raw;data/raw" --hidden-import=server --hidden-import=src.export_dashboard_data --hidden-import=src.risk_model --hidden-import=scipy.optimize._highspy --exclude=tkinter --exclude=seaborn --exclude=PyQt5 --exclude=PyQt6 --exclude=PySide2 --exclude=PySide6 --exclude=wx --exclude=matplotlib.backends.backend_qt5agg --exclude=matplotlib.backends.backend_qt6agg --exclude=matplotlib.backends.backend_wxagg --exclude=matplotlib.backends.backend_gtk3agg --exclude=matplotlib.backends.backend_gtk4agg --exclude=matplotlib.backends.backend_tkagg --exclude=matplotlib.backends.backend_pdf --exclude=matplotlib.backends.backend_svg --exclude=matplotlib.backends.backend_ps --exclude=matplotlib.backends.backend_pgf --exclude=numpy.tests --exclude=scipy.tests --exclude=pandas.tests --exclude=matplotlib.tests --exclude=PIL._avif --exclude=PIL._webp --exclude=PIL._imagingcms --exclude=sqlite3 --exclude=_sqlite3 --exclude=pydoc_data launcher.py
 if %errorlevel% neq 0 (
     echo [ERROR] Fallo el empaquetamiento con PyInstaller.
     exit /b 1
 )
 
-:: 5. Copiar ejecutable a la raíz y al Escritorio (directorio padre)
-echo [INFO] Copiando ejecutable a la raíz del proyecto...
-copy /y dist\Proyecto_Riesgo_Mercado.exe .
-echo [INFO] Copiando ejecutable al Escritorio...
-copy /y dist\Proyecto_Riesgo_Mercado.exe ..
-
 echo [INFO] 5/5. Compilacion finalizada.
 echo =====================================================================
 echo [EXITO] Ejecutable portable creado en:
 echo   - dist\Proyecto_Riesgo_Mercado.exe
-echo   - Proyecto_Riesgo_Mercado.exe (raiz)
-echo   - ..\Proyecto_Riesgo_Mercado.exe (Escritorio)
 echo =====================================================================

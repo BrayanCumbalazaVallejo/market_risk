@@ -22,8 +22,7 @@ a = Analysis(
         'PIL._avif', 'PIL._webp', 'PIL._imagingcms',
         'sqlite3', '_sqlite3', 'pydoc_data',
         'torch', 'torchvision', 'h5py', 'tensorflow', 'tensorboard',
-        'IPython', 'ipykernel', 'notebook', 'jedi', 'astropy', 'sympy',
-        'statsmodels', 'patsy'
+        'IPython', 'ipykernel', 'notebook', 'jedi', 'astropy', 'sympy'
     ],
     noarchive=False,
     optimize=0,

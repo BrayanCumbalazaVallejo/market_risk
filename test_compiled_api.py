@@ -6,7 +6,8 @@ import sys
 import os
 
 def test_api():
-    exe_path = r"c:\Users\BRAYAN\Desktop\Risk\Proyecto_Riesgo_Mercado.exe"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    exe_path = os.path.join(script_dir, "dist", "Proyecto_Riesgo_Mercado.exe")
     print(f"Starting {exe_path} on port 8090...")
     
     # Set PORT environment variable to force launcher to use port 8090

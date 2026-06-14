@@ -560,6 +560,28 @@ Las pruebas de usuario sobre el ejecutable confirman que la barra lateral derech
 
 ---
 
+### Entrada Clínica #20: Modificación del Flujo de Compilación (Único Ejecutable en dist/) y Control del Error de Conexión del Backend
+**Fecha/Hora:** 2026-06-14T00:38:00-05:00
+
+#### 1. Objetivo / Requerimiento
+* **Optimizar la distribución del ejecutable:** Cambiar los scripts de compilación para guardar el binario compilado portable `.exe` exclusivamente en la carpeta `dist/` (`dist/Proyecto_Riesgo_Mercado.exe`), eliminando copias redundantes e innecesarias en la raíz del proyecto y en el Escritorio.
+* **Documentar prevención del error repetitivo de conexión:** Aclarar e instruir adecuadamente en la guía de modificación del código que no se debe abrir `index.html` sin iniciar el backend en Python, evitando el conocido error `"Error de conexion con el backend: Unexpected token '<'"`.
+
+#### 2. Protocolo de Tratamiento e Implementación
+* **Modificación de Scripts de Compilación (`build.py` y `compilar_limpio.bat`)**:
+  - Se eliminaron las llamadas de copia de archivos que transferían el ejecutable a la raíz del repositorio (`.`) y al Escritorio de Windows (`..`). Ahora la salida se confina de manera controlada al directorio `dist/`.
+* **Actualización del README (`README.md`)**:
+  - Se modificaron las secciones de **Compilación y Distribución** y el **Flujo de Modificación del Código** para reflejar que la ruta exclusiva del binario es `dist/Proyecto_Riesgo_Mercado.exe`.
+  - Se agregó una sección detallada de advertencia (`[!CAUTION]`) que desglosa las causas y la prevención del error `"Unexpected token '<'"` (por peticiones no resueltas de la API del JS interceptadas por Live Server que devuelven HTML en lugar de JSON).
+* **Modificación de Scripts de Test (`test_compiled_api.py`)**:
+  - Se actualizó el script de pruebas automatizadas de la API para que localice dinámicamente el ejecutable portátil dentro del directorio `dist/` en lugar de una ruta absoluta cableada obsoleta.
+
+#### 3. Resultados de la Verificación
+* **Alineamiento de Rutas**: Se comprobó que el flujo de empaquetado finaliza dejando un único ejecutable en la carpeta `dist/`, manteniendo el directorio de desarrollo libre de ejecutables duplicados.
+* **Consistencia de Documentación**: El manual de desarrollador de la plataforma ahora advierte y previene explícitamente el fallo por falta de ejecución del backend.
+
+---
+
 ## Cierre Clínico y Bitácora Final del Proyecto
 **Fecha/Hora:** 2026-06-11T21:00:00-05:00
 
@@ -609,8 +631,8 @@ Para probar estadísticamente la precisión y suficiencia de capital del modelo 
 
 ---
 
-### 2. Índice e Inventario Completo de Entradas Clínicas (1 a 19)
-Se presenta la auditoría cronológica de las 19 fases de diagnóstico, tratamiento y remediación del proyecto:
+### 2. Índice e Inventario Completo de Entradas Clínicas (1 a 20)
+Se presenta la auditoría cronológica de las 20 fases de diagnóstico, tratamiento y remediación del proyecto:
 
 | Entrada | Fecha / Hora | Diagnóstico / Requerimiento | Tratamiento Metodológico Aplicado | Estado / Veredicto |
 | :--- | :--- | :--- | :--- | :--- |
@@ -633,6 +655,7 @@ Se presenta la auditoría cronológica de las 19 fases de diagnóstico, tratamie
 | **#17** | 2026-06-11T20:50 | Reubicación lateral de Autores y botón Detalles. | Colocación de Autores arriba de Especificación, avatares coloridos y rediseño llamativo en púrpura de .btn-details. | **APROBADO** (Estética premium y capturas finales). |
 | **#18** | 2026-06-13T18:45 | Solución a persistencia y fallback del servidor. | Redirección a directorio persistente del ejecutable, inclusión de scipy.optimize._highspy y exclusión de AMD de baseline. | **APROBADO** (Persistencia y APIs operativas). |
 | **#19** | 2026-06-14T00:20 | Congelación de requerimientos, saneamiento de Git y guía de depuración. | Creación de requirements.txt, configuración de .gitignore y .gitkeep, y redacción de la guía de arquitectura/depuración en el README. | **APROBADO** (Entorno estandarizado y libre de binarios). |
+| **#20** | 2026-06-14T00:38 | Modificación del Flujo de Compilación y Prevención de Error de Conexión. | Unificación del binario compilado en `dist/Proyecto_Riesgo_Mercado.exe` y redacción de la guía preventiva del error del backend. | **APROBADO** (Estructura de distribución saneada). |
 
 ---
 

@@ -55,40 +55,16 @@ def main():
     # 3. Compilar usando PyInstaller
     print("\n[INFO] Ejecutando PyInstaller para compilar el ejecutable portátil...")
     try:
-        # Usar el PyInstaller de venv_build si estamos ejecutando desde allí
-        pyinstaller_bin = "pyinstaller"
-        venv_pyinstaller = os.path.join(os.path.dirname(sys.executable), "pyinstaller.exe")
-        if os.path.exists(venv_pyinstaller):
-            pyinstaller_bin = venv_pyinstaller
-            print(f"[INFO] Detectado PyInstaller en el entorno virtual: {pyinstaller_bin}")
-            
-        cmd = [pyinstaller_bin, "--clean", "--noconfirm", "--upx-dir=.", "Proyecto_Riesgo_Mercado.spec"]
+        print(f"[INFO] Ejecutando PyInstaller a través de: {sys.executable} -m PyInstaller")
+        cmd = [sys.executable, "-m", "PyInstaller", "--clean", "--noconfirm", "--upx-dir=.", "Proyecto_Riesgo_Mercado.spec"]
         print(f"Ejecutando: {' '.join(cmd)}")
         subprocess.check_call(cmd)
-        
-        # Copiar ejecutable a la raíz y al escritorio (directorio padre)
-        import shutil
-        dest_root = "Proyecto_Riesgo_Mercado.exe"
-        dest_desktop = "../Proyecto_Riesgo_Mercado.exe"
-        
-        print(f"[INFO] Copiando ejecutable a la raíz...")
-        shutil.copy2("dist/Proyecto_Riesgo_Mercado.exe", dest_root)
-        print("[OK] Copiado a la raíz del proyecto.")
-        
-        try:
-            print(f"[INFO] Copiando ejecutable al Escritorio...")
-            shutil.copy2("dist/Proyecto_Riesgo_Mercado.exe", dest_desktop)
-            print("[OK] Copiado al Escritorio del usuario.")
-        except Exception as ex:
-            print(f"[WARN] No se pudo copiar al Escritorio: {ex}")
         
         print("\n=====================================================================")
         print("[ÉXITO] ¡Compilación finalizada exitosamente!")
         print("=====================================================================")
         print("El archivo ejecutable portátil se encuentra en:")
         print("  --> dist/Proyecto_Riesgo_Mercado.exe")
-        print("  --> Proyecto_Riesgo_Mercado.exe (raíz)")
-        print("  --> ../Proyecto_Riesgo_Mercado.exe (Escritorio)")
         print("\nEste archivo empaqueta todo el frontend y backend en un único archivo")
         print("portable que iniciará un servidor web silencioso y abrirá el dashboard.")
         
