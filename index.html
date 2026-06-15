@@ -160,13 +160,13 @@
               <div style="border-left: 3px solid var(--color-warning); padding-left: 0.85rem;">
                 <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">2. Optimización t-Student</strong>
                 <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
-                  Calibrar el modelo con una distribución t-Student (grados de libertad ~5.81) incrementó la precisión de la pérdida estimada del VaR paramétrico en un +18.4%.
+                  Calibrar el modelo con una distribución t-Student (grados de libertad ~5.80) incrementó la precisión de la pérdida estimada del VaR paramétrico en un +18.4%.
                 </span>
               </div>
               <div style="border-left: 3px solid var(--color-red); padding-left: 0.85rem;">
                 <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">3. Efecto Apalancamiento Sectorial</strong>
                 <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
-                  Se comprobó asimetría en NVDA (-0.057) y GOOGL (-0.042), demostrando que las caídas en el sector tecnológico y nube generan mayor volatilidad futura que las ganancias.
+                  Se comprobó asimetría en NVDA (-0.051) y GOOGL (-0.038), demostrando que las caídas en el sector tecnológico y nube generan mayor volatilidad futura que las ganancias.
                 </span>
               </div>
               <div style="border-left: 3px solid var(--color-green); padding-left: 0.85rem;">
@@ -184,19 +184,19 @@
               <div style="border-left: 3px solid var(--color-red); padding-left: 0.85rem;">
                 <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">6. Falsa Diversificación de Capital</strong>
                 <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
-                  Aunque el portafolio está equi-ponderado (25% cada activo), la Contribución Marginal al Riesgo demuestra que Micron (MU) concentra casi el 60% del riesgo total de cola.
+                  Aunque el portafolio está equi-ponderado (25% cada activo), la Contribución Marginal al Riesgo demuestra que Micron (MU) concentra el 59.2% del riesgo total de cola.
                 </span>
               </div>
               <div style="border-left: 3px solid var(--color-green); padding-left: 0.85rem;">
                 <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">7. Rol Estabilizador Energético</strong>
                 <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
-                  Constellation Energy (CEG) actúa como estabilizador del portafolio, aportando solo un ~18% al VaR total gracias a su baja covarianza condicional con el ecosistema de hardware.
+                  Constellation Energy (CEG) actúa como estabilizador del portafolio, aportando solo un 18.8% al VaR total gracias a su baja covarianza condicional con el ecosistema de hardware.
                 </span>
               </div>
               <div style="border-left: 3px solid var(--color-warning); padding-left: 0.85rem;">
                 <strong style="color: var(--text-primary); font-size: 0.88rem; display: block; margin-bottom: 0.15rem;">8. Contagio Sistémico (Stress Testing)</strong>
                 <span style="font-size: 0.82rem; color: var(--text-secondary); display: block; text-align: justify;">
-                  La matriz dinámica EWMA ($\lambda = 0.940$) evidenció que un shock adverso del -10% en NVDA propaga un contagio de -5.4% en GOOGL y -4.1% en MU, elevando el VaR global casi al doble.
+                  La matriz dinámica EWMA ($\lambda = 0.940$) evidenció que un shock adverso del -10% en NVDA propaga un contagio de -1.44% en GOOGL y -7.01% en MU, elevando el VaR global a más del doble (2.43 veces el original).
                 </span>
               </div>
               <div style="border-left: 3px solid var(--color-green); padding-left: 0.85rem;">
@@ -269,8 +269,8 @@
               <span>Especificación Técnica</span>
             </div>
             <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
-              <div><strong>Muestra:</strong> 01-Ene-2022 al 31-May-2026</div>
-              <div><strong>Observaciones:</strong> 1,104 días hábiles</div>
+              <div><strong>Muestra:</strong> <span id="spec-sample-range">01-Ene-2022 al 31-May-2026</span></div>
+              <div><strong>Observaciones:</strong> <span id="spec-observation-count">1,104</span> días hábiles</div>
               <div><strong>Activos:</strong> <span id="spec-assets-list">NVDA, GOOGL, CEG, MU</span></div>
               <div><strong>Frecuencia:</strong> Diaria de precios de cierre</div>
             </div>

@@ -6,7 +6,7 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[('index.html', '.'), ('styles.css', '.'), ('app.js', '.'), ('data/processed/dashboard_data.json', 'data/processed'), ('data/raw', 'data/raw')],
-    hiddenimports=['server', 'src.export_dashboard_data', 'src.risk_model', 'scipy.optimize._highspy'],
+    hiddenimports=['server', 'src.export_dashboard_data', 'src.risk_model', 'scipy.optimize._highspy', 'statsmodels', 'patsy', 'scipy._cyutility'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -22,7 +22,8 @@ a = Analysis(
         'PIL._avif', 'PIL._webp', 'PIL._imagingcms',
         'sqlite3', '_sqlite3', 'pydoc_data',
         'torch', 'torchvision', 'h5py', 'tensorflow', 'tensorboard',
-        'IPython', 'ipykernel', 'notebook', 'jedi', 'astropy', 'sympy'
+        'IPython', 'ipykernel', 'notebook', 'jedi', 'astropy', 'sympy',
+        'cv2', 'pygame', 'boto3', 'sklearn', 'scikit-learn'
     ],
     noarchive=False,
     optimize=0,

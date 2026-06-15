@@ -1,5 +1,5 @@
 1. Compresión UPX Activa (LZMA)
-PyInstaller detectó y utilizó la herramienta upx.exe que se encuentra en la raíz del proyecto. Al empaquetar, se aplicó el algoritmo de compresión LZMA sobre todas las bibliotecas dinámicas comprimibles (.dll y .pyd de Python, NumPy, SciPy, etc.). Esto reduce el tamaño de almacenamiento del binario compilado de manera muy notable, bajando de unos ~172 MB a solo ~61.3 MB sin perder ninguna funcionalidad.
+PyInstaller detectó y utilizó la herramienta upx.exe que se encuentra en la raíz del proyecto. Al empaquetar, se aplicó el algoritmo de compresión LZMA sobre todas las bibliotecas dinámicas comprimibles (.dll y .pyd de Python, NumPy, SciPy, etc.). Esto reduce el tamaño de almacenamiento del binario compilado de manera muy notable, bajando del tamaño inicial desordenado de ~744 MB a solo ~61.38 MB en perfecto estado de funcionamiento (habiendo optimizado las exclusiones sin romper las dependencias internas de scipy.stats).
 
 2. Exclusiones Agresivas de Librerías No Usadas
 Se configuró el archivo de compilación 
@@ -19,7 +19,7 @@ Sin embargo, la biblioteca de análisis econométrico arch (usada para calcular 
 El backend fallaba al importar CustomHTTPRequestHandler debido a la falta de dependencias de arch.
 El lanzador del ejecutable (launcher.py) caía automáticamente en un servidor HTTP básico de fallback (SimpleHTTPRequestHandler), el cual no soporta peticiones de tipo POST (como la carga /api/upload o eliminación /api/delete de activos).
 Ante un POST, el servidor básico respondía con una página de error en código HTML (que inicia con el tag <html> o <!DOCTYPE...), el cual JavaScript intentaba interpretar como un JSON, fallando inmediatamente con el error del caracter inesperado <.
-Al re-incluir estas dos librerías pero manteniendo el resto de las exclusiones y la compresión UPX activa, hemos solucionado el error recurrente manteniendo el ejecutable al mínimo tamaño posible (61.3 MB).
+Al re-incluir estas dos librerías (statsmodels y patsy) y restaurar scipy.spatial (la cual es requerida internamente por scipy.stats y arch, por lo que su exclusión rota impedía iniciar el servidor customizado), hemos solucionado el error recurrente manteniendo el ejecutable al mínimo tamaño posible en funcionamiento (~61.38 MB).
 
 Verificación Exitosa:
 He corrido las pruebas de API sobre el ejecutable recién compilado en 

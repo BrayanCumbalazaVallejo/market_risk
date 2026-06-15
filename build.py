@@ -55,8 +55,19 @@ def main():
     # 3. Compilar usando PyInstaller
     print("\n[INFO] Ejecutando PyInstaller para compilar el ejecutable portátil...")
     try:
-        print(f"[INFO] Ejecutando PyInstaller a través de: {sys.executable} -m PyInstaller")
-        cmd = [sys.executable, "-m", "PyInstaller", "--clean", "--noconfirm", "--upx-dir=.", "Proyecto_Riesgo_Mercado.spec"]
+        # Detectar e intentar usar el Python del entorno virtual si existe
+        py_exe = sys.executable
+        venv_py = os.path.join("venv_build", "Scripts", "python.exe")
+        if not os.path.exists(venv_py):
+            venv_py = os.path.join("venv_build", "bin", "python")
+        if os.path.exists(venv_py):
+            py_exe = venv_py
+            print(f"[INFO] Entorno virtual detectado. Usando: {py_exe}")
+        else:
+            print(f"[INFO] Usando intérprete actual: {py_exe}")
+            
+        print(f"[INFO] Ejecutando PyInstaller a través de: {py_exe} -m PyInstaller")
+        cmd = [py_exe, "-m", "PyInstaller", "--clean", "--noconfirm", "--upx-dir=.", "Proyecto_Riesgo_Mercado.spec"]
         print(f"Ejecutando: {' '.join(cmd)}")
         subprocess.check_call(cmd)
         

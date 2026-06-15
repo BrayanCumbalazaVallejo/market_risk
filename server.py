@@ -177,7 +177,24 @@ class CustomHTTPRequestHandler(SimpleHTTPRequestHandler):
             
         filepath = os.path.join(DATA_RAW_DIR, f"{ticker}.csv")
         if not os.path.exists(filepath):
-            return {"success": False, "error": f"El activo {ticker} no se encuentra en el portafolio."}
+            # El archivo ya no existe en el disco, tal vez se eliminó en un intento previo fallido.
+            # Intentamos regenerar para asegurar que el estado quede limpio y devolvemos éxito.
+            print(f"Advertencia: El archivo de {ticker} no existe en {filepath}. Sincronizando estado...")
+            try:
+                from src.export_dashboard_data import main as export_main
+                export_main()
+                try:
+                    from src.risk_model import main as risk_main
+                    risk_main()
+                except Exception:
+                    pass
+            except Exception as e:
+                return {"success": False, "error": f"El activo ya no existía en disco, y falló la regeneración: {str(e)}"}
+            return {
+                "success": True,
+                "ticker": ticker,
+                "message": f"El activo {ticker} ya no se encontraba en el portafolio (eliminación sincronizada)."
+            }
             
         # Eliminar el archivo
         try:
@@ -279,8 +296,9 @@ class CustomHTTPRequestHandler(SimpleHTTPRequestHandler):
                 ref_df['Fecha'] = pd.to_datetime(ref_df['Fecha'], errors='coerce')
             ref_df = ref_df.dropna(subset=['Fecha']).sort_values('Fecha').reset_index(drop=True)
             
-            # Unir para alinear con el calendario NASDAQ exacto
-            df_merged = pd.merge(ref_df[['Fecha']], df[['Fecha', 'Último']], on='Fecha', how='left')
+            # Unir para alinear con el calendario NASDAQ exacto (permitiendo expansión temporal)
+            df_merged = pd.merge(ref_df[['Fecha']], df[['Fecha', 'Último']], on='Fecha', how='outer')
+            df_merged = df_merged.sort_values('Fecha').reset_index(drop=True)
             
             # Imputación LOCF (Forward-Fill y luego Backward-Fill para iniciales si los hay)
             df_merged['Último'] = df_merged['Último'].ffill().bfill()

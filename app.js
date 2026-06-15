@@ -579,9 +579,9 @@ function renderAssetDynamicsChart() {
       scales: {
         x: {
           grid: { color: 'rgba(255,255,255,0.03)' },
+          afterBuildTicks: customBuildTicks,
           ticks: {
             color: '#9ca3af',
-            maxTicksLimit: 10,
             maxRotation: 45,
             minRotation: 45,
             callback: function(val, index) {
@@ -729,18 +729,25 @@ function calculateEGARCHProjection(ticker, horizon) {
   
   const P0 = asset.prices[asset.prices.length - 1];
   
-  // Generar fechas hábiles (business days) desde 2026-06-01
+  // Generar fechas hábiles (business days) desde el día siguiente al último dato
   const projDates = [];
-  let currDate = new Date('2026-06-01');
+  const lastDateStr = dataset.dates[dataset.dates.length - 1];
+  const parts = lastDateStr.split('-');
+  const lastYear = parseInt(parts[0], 10);
+  const lastMonth = parseInt(parts[1], 10) - 1;
+  const lastDay = parseInt(parts[2], 10);
+  let currDate = new Date(Date.UTC(lastYear, lastMonth, lastDay));
+  currDate.setUTCDate(currDate.getUTCDate() + 1);
+  
   while (projDates.length < horizon) {
-    const day = currDate.getDay();
+    const day = currDate.getUTCDay();
     if (day !== 0 && day !== 6) { // saltar fin de semana
-      const year = currDate.getFullYear();
-      const month = String(currDate.getMonth() + 1).padStart(2, '0');
-      const date = String(currDate.getDate()).padStart(2, '0');
+      const year = currDate.getUTCFullYear();
+      const month = String(currDate.getUTCMonth() + 1).padStart(2, '0');
+      const date = String(currDate.getUTCDate()).padStart(2, '0');
       projDates.push(`${year}-${month}-${date}`);
     }
-    currDate.setDate(currDate.getDate() + 1);
+    currDate.setUTCDate(currDate.getUTCDate() + 1);
   }
   
   let h_next = last_vol_scaled * last_vol_scaled;
@@ -879,9 +886,9 @@ function renderPriceProjection(ticker) {
       scales: {
         x: {
           grid: { color: 'rgba(255,255,255,0.03)' },
+          afterBuildTicks: customBuildTicks,
           ticks: {
             color: '#9ca3af',
-            maxTicksLimit: 10,
             maxRotation: 45,
             minRotation: 45,
             callback: function(val, index) {
@@ -907,7 +914,7 @@ function renderPriceProjection(ticker) {
           const labels = chart.data.labels;
           const index = labels.findIndex(lbl => lbl.includes('Corte Hoy'));
           if (index !== -1) {
-            const x = xAxis.getPixelForTick(index);
+            const x = xAxis.getPixelForValue(index);
             
             ctx.save();
             // Sombrear región de pronóstico
@@ -953,6 +960,36 @@ function formatDateToMmmYy(label) {
   const formatted = `${monthName}-${yearShort}`;
   
   return isCorte ? `${formatted} (Corte Hoy)` : formatted;
+}
+
+function customBuildTicks(axis) {
+  const labels = axis.chart.data.labels;
+  if (!labels || labels.length === 0) return;
+  const maxTicks = 10;
+  const ticks = [];
+  if (labels.length <= maxTicks) {
+    for (let i = 0; i < labels.length; i++) {
+      ticks.push({ value: i });
+    }
+  } else {
+    for (let i = 0; i < maxTicks; i++) {
+      const idx = Math.round((i * (labels.length - 1)) / (maxTicks - 1));
+      ticks.push({ value: idx });
+    }
+  }
+  axis.ticks = ticks;
+}
+
+function formatDateToSpanishLong(dateStr) {
+  if (!dateStr) return '';
+  const cleanLabel = dateStr.replace(' (Corte Hoy)', '');
+  const parts = cleanLabel.split('-');
+  if (parts.length !== 3) return dateStr;
+  const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const year = parts[0];
+  const monthName = months[parseInt(parts[1], 10) - 1];
+  const day = String(parseInt(parts[2], 10)).padStart(2, '0');
+  return `${day}-${monthName}-${year}`;
 }
 
 function getNormalCDF(x) {
@@ -1485,9 +1522,9 @@ function recalculateBacktesting() {
       scales: {
         x: {
           grid: { color: 'rgba(255,255,255,0.03)' },
+          afterBuildTicks: customBuildTicks,
           ticks: {
             color: '#9ca3af',
-            maxTicksLimit: 10,
             maxRotation: 45,
             minRotation: 45,
             callback: function(val, index) {
@@ -1662,9 +1699,9 @@ function renderOverviewPanel() {
       scales: {
         x: {
           grid: { color: 'rgba(255,255,255,0.03)' },
+          afterBuildTicks: customBuildTicks,
           ticks: {
             color: '#9ca3af',
-            maxTicksLimit: 10,
             maxRotation: 45,
             minRotation: 45,
             callback: function(val, index) {
@@ -1892,9 +1929,9 @@ function simulateEWMA(lambda) {
         scales: {
           x: {
             grid: { color: 'rgba(255,255,255,0.03)' },
+            afterBuildTicks: customBuildTicks,
             ticks: {
               color: '#9ca3af',
-              maxTicksLimit: 10,
               maxRotation: 45,
               minRotation: 45,
               callback: function(val, index) {
@@ -2154,6 +2191,18 @@ function populateDynamicSelectors() {
   const specList = document.getElementById('spec-assets-list');
   if (specList) {
     specList.textContent = tickers.length > 0 ? tickers.join(', ') : 'Ninguno';
+  }
+  
+  const specSampleRange = document.getElementById('spec-sample-range');
+  if (specSampleRange && dataset && dataset.dates && dataset.dates.length > 0) {
+    const firstDateFormatted = formatDateToSpanishLong(dataset.dates[0]);
+    const lastDateFormatted = formatDateToSpanishLong(dataset.dates[dataset.dates.length - 1]);
+    specSampleRange.textContent = `${firstDateFormatted} al ${lastDateFormatted}`;
+  }
+  
+  const specObsCount = document.getElementById('spec-observation-count');
+  if (specObsCount && dataset && dataset.dates) {
+    specObsCount.textContent = dataset.dates.length.toLocaleString('es-ES');
   }
 }
 

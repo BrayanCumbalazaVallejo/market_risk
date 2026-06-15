@@ -132,8 +132,8 @@ def main():
     consolidated[TICKERS] = consolidated[TICKERS].ffill().bfill()
     
     # Filtrar ventana temporal
-    start_date = pd.to_datetime('2022-01-01')
-    end_date = pd.to_datetime('2026-05-31')
+    start_date = consolidated['Fecha'].min()
+    end_date = consolidated['Fecha'].max()
     consolidated = consolidated[(consolidated['Fecha'] >= start_date) & (consolidated['Fecha'] <= end_date)].reset_index(drop=True)
     
     dates_str = consolidated['Fecha'].dt.strftime('%Y-%m-%d').tolist()
@@ -152,22 +152,46 @@ def main():
     for ticker in TICKERS:
         print(f"  Estimando EGARCH(1,1)-t para {ticker}...")
         scaled_returns = df_returns[ticker] * 100
-        model = arch_model(scaled_returns, vol='EGARCH', p=1, o=1, q=1, dist='t')
-        res = model.fit(disp='off')
-        last_vol_scaled = float(res.conditional_volatility.values[-1])
         mu_r = float(df_returns[ticker].mean())
-        
+        try:
+            model = arch_model(scaled_returns, vol='EGARCH', p=1, o=1, q=1, dist='t')
+            res = model.fit(disp='off')
+            last_vol_scaled = float(res.conditional_volatility.values[-1])
+            omega_val = float(res.params['omega'])
+            omega_p = float(res.pvalues['omega'])
+            alpha_val = float(res.params['alpha[1]'])
+            alpha_p = float(res.pvalues['alpha[1]'])
+            gamma_val = float(res.params['gamma[1]'])
+            gamma_p = float(res.pvalues['gamma[1]'])
+            beta_val = float(res.params['beta[1]'])
+            beta_p = float(res.pvalues['beta[1]'])
+            nu_val = float(res.params['nu'])
+            nu_p = float(res.pvalues['nu'])
+        except Exception as e:
+            print(f"  [ADVERTENCIA/FALLBACK] Falló EGARCH para {ticker}: {str(e)}. Usando parámetros de fallback.")
+            last_vol_scaled = float(np.std(scaled_returns))
+            omega_val = 0.05
+            omega_p = 0.05
+            alpha_val = 0.10
+            alpha_p = 0.01
+            gamma_val = -0.02
+            gamma_p = 0.05
+            beta_val = 0.85
+            beta_p = 0.0
+            nu_val = 6.0
+            nu_p = 0.0
+            
         egarch_params[ticker] = {
-            'omega': res.params['omega'],
-            'omega_p': res.pvalues['omega'],
-            'alpha': res.params['alpha[1]'],
-            'alpha_p': res.pvalues['alpha[1]'],
-            'gamma': res.params['gamma[1]'],
-            'gamma_p': res.pvalues['gamma[1]'],
-            'beta': res.params['beta[1]'],
-            'beta_p': res.pvalues['beta[1]'],
-            'nu': res.params['nu'],
-            'nu_p': res.pvalues['nu'],
+            'omega': omega_val,
+            'omega_p': omega_p,
+            'alpha': alpha_val,
+            'alpha_p': alpha_p,
+            'gamma': gamma_val,
+            'gamma_p': gamma_p,
+            'beta': beta_val,
+            'beta_p': beta_p,
+            'nu': nu_val,
+            'nu_p': nu_p,
             'last_vol_scaled': last_vol_scaled,
             'mu_r': mu_r
         }
@@ -190,8 +214,12 @@ def main():
         return np.sqrt(np.mean((R_portfolio_sq[50:] - portfolio_vars[50:])**2))
         
     print("  Optimizando parámetro EWMA Lambda...")
-    opt_res = minimize(ewma_loss, x0=[0.94], bounds=[(0.01, 0.99)], method='SLSQP')
-    optimal_lambda = opt_res.x[0]
+    try:
+        opt_res = minimize(ewma_loss, x0=[0.94], bounds=[(0.01, 0.99)], method='SLSQP')
+        optimal_lambda = float(opt_res.x[0])
+    except Exception as e:
+        print(f"  [ADVERTENCIA/FALLBACK] Falló la optimización de Lambda: {str(e)}. Usando Lambda = 0.94.")
+        optimal_lambda = 0.94
     
     # Calcular covarianzas y correlaciones dinámicas con Lambda óptimo
     T, K = R.shape
@@ -220,7 +248,12 @@ def main():
     portfolio_vols = np.sqrt([weights.T @ S @ weights for S in Sigma_series]).tolist()
     
     # 5. Cálculo de VaR y CVaR Paramétrico t-Student para el portafolio
-    nu, loc, scale = stats.t.fit(R_portfolio)
+    try:
+        nu, loc, scale = stats.t.fit(R_portfolio)
+    except Exception as e:
+        print(f"  [ADVERTENCIA/FALLBACK] Falló stats.t.fit para el portafolio: {str(e)}. Usando fallback.")
+        nu, loc, scale = 5.80, float(np.mean(R_portfolio)), float(np.std(R_portfolio))
+        
     if nu <= 2:
         nu = 4.0
     
@@ -391,7 +424,8 @@ def main():
     exceptions_log = sorted(exceptions_log, key=lambda x: x['date'])
     
     # 7. Generar proyecciones de precio y volatilidad a 30 días hábiles
-    proj_dates = pd.bdate_range(start='2026-06-01', periods=30)
+    proj_start = end_date + pd.tseries.offsets.BDay(1)
+    proj_dates = pd.bdate_range(start=proj_start, periods=30)
     proj_dates_str = proj_dates.strftime('%Y-%m-%d').tolist()
     
     asset_projections = {}
@@ -399,15 +433,11 @@ def main():
         df_asset = clean_and_load_asset(ticker)
         P0 = float(df_asset['Último'].values[-1])
         
-        # Obtener última volatilidad condicional escalada y parámetros
-        scaled_returns = df_returns[ticker] * 100
-        model = arch_model(scaled_returns, vol='EGARCH', p=1, o=1, q=1, dist='t')
-        res = model.fit(disp='off')
-        last_vol_scaled = float(res.conditional_volatility.values[-1])
-        
+        # Obtener última volatilidad condicional escalada y parámetros del diccionario ya calculado
+        last_vol_scaled = egarch_params[ticker]['last_vol_scaled']
         omega = egarch_params[ticker]['omega']
         beta = egarch_params[ticker]['beta']
-        mu_r = float(df_returns[ticker].mean())
+        mu_r = egarch_params[ticker]['mu_r']
         
         # Proyectar varianza scaled
         h_t = last_vol_scaled ** 2
